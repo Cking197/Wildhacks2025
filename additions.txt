@@ -1,0 +1,16 @@
+Profile:
+Emails
+Address
+update after the fact
+
+Hobbies:
+Likes/dislikes
+
+Tasks:
+deadlines
+add/delete
+once complete add to past experience
+
+Authentication:
+OAuth
+login creds
