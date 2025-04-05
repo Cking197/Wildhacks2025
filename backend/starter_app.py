@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from pymongo import MongoClient
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
 app = Flask(__name__)
 CORS(app)
@@ -33,9 +35,9 @@ def update_user():
     try:
         data = request.get_json()
         users.updateOne(
-            {"_id": data["id"]},
-            {$set: {
-                "name": data["name"].
+            {"_id": data["_id"]["$oid"]},
+            {"$set": {
+                "name": data["name"],
                 "pastHobbies": data["pastHobbies"],
                 "activeHobbies": data["activeHobbies"],
                 "location": data["location"],
@@ -50,7 +52,7 @@ def update_user():
 def get_user():
     try:
         data = request.get_json()
-        user = users.findOne({"_id":data["id"]}, {}, {})
+        user = users.findOne({"_id": data["_id"]["$oid"]}, {}, {})
         return jsonify(user)
     except Exception as e:
         print("Error: ", e)
@@ -60,7 +62,7 @@ def get_user():
 def delete_user():
     try:
         data = request.get_json()
-        user = users.deleteOne({"_id":data["id"]}, {}, {})
+        user = users.deleteOne({"_id": data["_id"]["$oid"]}, {}, {})
         return jsonify(user)
     except Exception as e:
         print("Error: ", e)
