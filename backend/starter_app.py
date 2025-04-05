@@ -16,22 +16,55 @@ except Exception as e:
     print(e)
 
 db = client["mydatabase"]
-collection = db["messages"]
+users = db["users"]
 
-@app.route("/")
-def hello():
-    return jsonify(message="hello from your flask server!")
+@app.route("/createUser", methods=["POST"])
+def create_user():
+    try:
+        data = request.get_json()
+        users.insert_one(data)
+        return jsonify(message="User created!")
+    except Exception as e:
+        print("Error: ", e)
+        return jsonify(message="Error: User not created")
 
-@app.route("/messages", methods=["POST"])
-def save_message():
-    data = request.get_json()
-    collection.insert_one(data)
-    return jsonify(message="message saved!")
+@app.route("/updateUser", methods=["POST"])
+def update_user():
+    try:
+        data = request.get_json()
+        users.updateOne(
+            {"_id": data["id"]},
+            {$set: {
+                "name": data["name"].
+                "pastHobbies": data["pastHobbies"],
+                "activeHobbies": data["activeHobbies"],
+                "location": data["location"],
+                "availability": data["availability"]
+            }})
+        return jsonify(message="User updated!")
+    except Exception as e:
+        print("Error: ", e)
+        return jsonify(message="Error: User not updated")
 
-@app.route("/messages", methods=["GET"])
-def get_messages():
-    messages = list(collection.find({}, {"_id": 0}))
-    return jsonify(messages)
+@app.route("/getUser", methods=["GET"])
+def get_user():
+    try:
+        data = request.get_json()
+        user = users.findOne({"_id":data["id"]}, {}, {})
+        return jsonify(user)
+    except Exception as e:
+        print("Error: ", e)
+        return jsonify(message="Error: User not found")
+
+@app.route("/deleteUser", methods=["GET"])
+def delete_user():
+    try:
+        data = request.get_json()
+        user = users.deleteOne({"_id":data["id"]}, {}, {})
+        return jsonify(user)
+    except Exception as e:
+        print("Error: ", e)
+        return jsonify(message="Error: User not deleted")
 
 if __name__ == "__main__":
     app.run(debug=True)
