@@ -1,6 +1,8 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
 from pymongo import MongoClient
+from pymongo.mongo_client import MongoClient
+from pymongo.server_api import ServerApi
 
 app = Flask(__name__)
 CORS(app)
@@ -16,7 +18,7 @@ except Exception as e:
     print(e)
 
 db = client["mydatabase"]
-collection = db["messages"]
+collection = db["users"]
 
 @app.route("/")
 def hello():
