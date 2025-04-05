@@ -2,7 +2,7 @@
 wildhacks repository
 
 ## Contributors
-Eiko Reisz, Connor King, Samuel Grayson, Jeri ...
+Eiko Reisz, Connor King, Samuel Grayson, Jeri Huang...
 
 ## Dependencies
 - TBD
