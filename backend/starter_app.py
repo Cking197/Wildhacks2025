@@ -8,7 +8,7 @@ from pymongo.server_api import ServerApi
 app = Flask(__name__)
 CORS(app)
 
-uri = "mongodb+srv://admin:NUAdmin4321@cluster0.yospykr.mongodb.net/?appName=Cluster0"
+uri = "hi"
 # Create a new client and connect to the server
 client = MongoClient(uri, server_api=ServerApi('1'))
 # Send a ping to confirm a successful connection
