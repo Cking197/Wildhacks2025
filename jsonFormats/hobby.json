@@ -1,0 +1,6 @@
+{
+    "name": "String", // name of the hobby
+    "tasks": "listOf Object", //list of tasks associated with pursuit of hobby. empty if past hobby
+    "experience": "enum{none, low, intermediate, high}", // enum for level of experience user has in hobby
+    "pursuitCost": "enum{low,medium,high}" //enum for difficulty of pursuing th ehobby
+}

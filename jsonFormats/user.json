@@ -1,0 +1,7 @@
+{
+    "userId": "String", // A unique identifier for the user
+    "pastHobbies": listOf Object, //list of user hobbies used in generation of new hobby ideas
+    "activeHobbies": listOf Object, //list of user hobbies actively being pursued 
+    "location": enum{urban,suburban,rural}, // ennum for areas user is. used for generation and task assignment
+    "availability": enum{low, medium, high}, //enum for user availability in pursuing hobbies. used for generation and task assignment
+}
