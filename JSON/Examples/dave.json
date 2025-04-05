@@ -1,0 +1,55 @@
+{
+    "name": "Dave",
+    "pastHobbies": [
+        {
+            "activity": "Baseball",
+            "experience": {
+                "$numberInt": "1"
+            },
+            "cost": {
+                "$numberInt": "70"
+            },
+            "time": {
+                "$numberInt": "2"
+            },
+            "active": false,
+            "tasks": []
+        },
+        {
+            "activity": "Painting",
+            "experience": {
+                "$numberInt": "0"
+            },
+            "cost": {
+                "$numberInt": "20"
+            },
+            "time": {
+                "$numberInt": "0"
+            },
+            "active": true,
+            "tasks": [
+                {
+                    "action": "buy brush",
+                    "complete": true
+                },
+                {
+                    "action": "paint MonaLisa",
+                    "complete": false
+                }
+            ]
+        }
+    ],
+    "activeHobbies": [],
+    "location": {
+        "$numberInt": "0"
+    },
+    "availability": {
+        "$numberInt": "0"
+    },
+    "budget": {
+        "$numberInt": "54"
+    },
+    "age": {
+        "$numberInt": "35"
+    }
+}
