@@ -43,7 +43,7 @@ def update_user():
             "location": data["location"],
             "availability": data["availability"]
         }
-        users.updateOne({"_id": data["_id"]["$oid"]}, {"$set": update_fields})
+        users.updateOne({"_id": user_id}, {"$set": update_fields})
         return jsonify(message="User updated!")
     except Exception as e:
         print("Error: ", e)
