@@ -1,5 +1,6 @@
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+from bson import ObjectId
 from pymongo import MongoClient
 from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
@@ -24,7 +25,7 @@ users = db["users"]
 def create_user():
     try:
         data = request.get_json()
-        insertid = users.insert_one(data)
+        result = users.insert_one(data)
         return jsonify(message="User created!", _id=str(result.inserted_id))
     except Exception as e:
         print("Error: ", e)
