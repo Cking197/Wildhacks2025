@@ -81,9 +81,10 @@ def delete_user():
 
 # Create Hobbies -> Post } Gemini API
     # Create Hobby -> Post } MongoDB
-# github copilot: "Write and explain code to make Gemini API to search for and post hobby activities based on user from and to MongoDB"
-@app.route("/searchAndSaveHobbies", methods=["POST"])
-def search_and_save_hobbies():
+# github copilot: "Write and explain code to make Gemini API to search for hobby activities based on user update fields in MongoDB and return a list of hobby names, description, and activity cost for the user to select from and post as hobby for that user in MongoDB"
+
+@app.route("/searchHobbies", methods=["POST"])
+def search_hobbies():
     try:
         # Get user data from the request body
         data = request.get_json()
@@ -108,17 +109,32 @@ def search_and_save_hobbies():
 
         # Handle Gemini API response
         if response.status_code == 200:
-            hobbies = response.json()  # Assuming the API returns a list of hobbies
+            hobbies = response.json()  # Assuming the API returns a list of hobbies with names, descriptions, and costs
 
-            # Save hobbies to MongoDB
-            users.update_one(
-                {"_id": user_id},
-                {"$set": {"recommendedHobbies": hobbies}}
-            )
-
-            return jsonify({"message": "Hobbies fetched and saved successfully!", "hobbies": hobbies}), 200
+            # Return the list of hobbies to the frontend for user selection
+            return jsonify({"message": "Hobbies fetched successfully!", "hobbies": hobbies}), 200
         else:
             return jsonify({"error": "Failed to fetch hobbies from Gemini API"}), response.status_code
+    except Exception as e:
+        print("Error:", e)
+        return jsonify({"error": str(e)}), 500
+
+
+@app.route("/saveHobbies", methods=["POST"])
+def save_hobbies():
+    try:
+        # Get user data and selected hobbies from the request body
+        data = request.get_json()
+        user_id = ObjectId(data["_id"])  # Assuming frontend sends _id as a string
+        selected_hobbies = data.get("selectedHobbies", [])  # List of hobbies selected by the user
+
+        # Save the selected hobbies to the user's profile in MongoDB
+        users.update_one(
+            {"_id": user_id},
+            {"$set": {"selectedHobbies": selected_hobbies}}
+        )
+
+        return jsonify({"message": "Selected hobbies saved successfully!"}), 200
     except Exception as e:
         print("Error:", e)
         return jsonify({"error": str(e)}), 500
