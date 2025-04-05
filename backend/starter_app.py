@@ -35,7 +35,7 @@ def create_user():
 def update_user():
     try:
         data = request.get_json()
-        user_id = ObjectId(data["_id"])  # assuming frontend sends _id as a string
+        user_id = ObjectId(data["_id"]["$oid"])  # assuming frontend sends _id as a string
         update_fields = {
             "name": data["name"],
             "pastHobbies": data["pastHobbies"],
@@ -43,7 +43,7 @@ def update_user():
             "location": data["location"],
             "availability": data["availability"]
         }
-        users.updateOne({"_id": user_id}, {"$set": update_fields})
+        users.update_one({"_id": user_id}, {"$set": update_fields})
         return jsonify(message="User updated!")
     except Exception as e:
         print("Error: ", e)
@@ -53,7 +53,7 @@ def update_user():
 def get_user():
     try:
         data = request.get_json()
-        user_id = ObjectId(data["_id"])
+        user_id = ObjectId(data["_id"]["$oid"])  # assuming frontend sends _id as a string
         user = users.find_one({"_id": user_id})
         if user:
             user["_id"] = str(user["_id"])  # convert ObjectId to string for JSON
