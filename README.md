@@ -5,7 +5,9 @@ wildhacks repository
 Eiko Reisz, Connor King, Samuel Grayson, Jeri ...
 
 ## Dependencies
-- TBD
+- flask_cors
+- pymongo
+- python-dotenv
 
 ## Acknowledgements
 N/A
