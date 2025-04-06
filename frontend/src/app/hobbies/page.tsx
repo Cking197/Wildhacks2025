@@ -209,11 +209,10 @@ export default function Hobbies() {
               type="button"
               onClick={handleFindNewHobbies}
               disabled={isButtonDisabled}
-              className={`text-white px-4 py-2 rounded transition ${
-                isButtonDisabled
+              className={`text-white px-4 py-2 rounded transition ${isButtonDisabled
                   ? "bg-gray-300 cursor-not-allowed"
                   : "hover:opacity-90"
-              }`}
+                }`}
               style={{
                 backgroundColor: isButtonDisabled ? "#ccc" : "#db4d3a",
               }}

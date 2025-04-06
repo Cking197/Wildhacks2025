@@ -1,10 +1,10 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function Page() {
-  const [hobbies] = useState([
+  const [hobbies,setHobbies] = useState([
     {
       title: "",
       description: "",
@@ -24,6 +24,45 @@ export default function Page() {
       time: "",
     },
   ]);
+  const [error, setError] = useState("");
+
+    useEffect(() => {
+      const fetchData = async () => {
+        try {
+          const userID = new URL(window.location.href).searchParams.get("userID");
+  
+          const response = await fetch("http://127.0.0.1:5000/createHobbies", {
+            method: "POST", // or GET with query params if supported
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              _id: { $oid: userID },
+            }),
+          });
+  
+          const data = await response.json();
+  
+          if (response.ok) {
+            // Example: backend returns hobbies like [{ activity: "Tennis", experience: "Intermediate" }, ...]
+            const hobbyData = data.pastHobbies.map((hobby: any) => ({
+              activity: hobby.activity,
+              description: hobby.description,
+              cost: hobby.budget, // or true if you want them to be editable initially
+              time:hobby.time
+            }));
+            setHobbies(hobbyData);
+          } else {
+            setError(data.message || "Failed to load hobbies.");
+          }
+        } catch (err) {
+          console.error(err);
+          setError("Something went wrong while fetching data.");
+        }
+      };
+  
+      fetchData();
+    }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 font-[family-name:var(--font-geist-sans)]">
