@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Image from "next/image";
+import { access } from "fs";
 
 export default function Page() {
   const [tasks, setTasks] = useState([]); // State to store tasks fetched from the backend
@@ -56,7 +57,7 @@ export default function Page() {
     fetchTasks();
   }, []);
 
-  const toggleFieldCompletion = (activityIndex: number, taskIndex: number) => {
+   const toggleFieldCompletion = async (activityIndex: number, taskIndex: number) => {
     const globalActivityIndex = currentPage * tasksPerPage + activityIndex; // Adjust for the current page offset
     setActivities((prevActivities) =>
       prevActivities.map((activity, aIndex) =>
@@ -72,6 +73,53 @@ export default function Page() {
           : activity
       )
     );
+    try {
+      const userIDFromURL = new URL(window.location.href).searchParams.get("userID");
+      setUserID(userIDFromURL); // Save userID for use in URLs
+
+
+      const response = await fetch("http://127.0.0.1:5000/getUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          _id: { $oid: userIDFromURL },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to fetch tasks");
+      }
+      const data = await response.json();
+      
+      console.log(data)
+      data["activeHobbies"][globalActivityIndex]["tasks"][taskIndex]["completed"]= !data["activeHobbies"][globalActivityIndex]["tasks"][taskIndex]["completed"]
+      console.log(data)
+      const response2 = await fetch("http://127.0.0.1:5000/updateUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          _id: { $oid: userID },
+          name: data.name,
+          pastHobbies: data.pastHobbies,
+          activeHobbies: data.activeHobbies,
+          location: data.location,
+          availability: data.availability,
+          budget: data.budget,
+          age: data.age
+        }),
+      });
+      console.log(response)
+      if (!response.ok) {
+        throw new Error("Failed to fetch tasks");
+      }
+      const data2 = await response.json();
+    } catch (error) {
+      //setError("Failed to update tasks. Please try again later.");
+    }
   };
 
   const handleNextPage = () => {
