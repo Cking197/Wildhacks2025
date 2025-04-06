@@ -91,20 +91,14 @@ def delete_user():
 @app.route("/createHobbies", methods=["POST"])
 def create_Hobbies():
     try:
-        data = get_user()
-        data=data.get_json()
-        locations = ["urban", "suburban", "rural"]
-        availability = ["0-3", "3-6", "6+"]
-        
-        print(data)
-        return data
+        data = get_user() 
+        data=data.get_json() 
 
         hobbies = ', '.join([obj["activity"] for obj in data["pastHobbies"]])
-        print(hobbies)
         
         prompt = f"""As someone who has previously spent time {hobbies}, please give me a JSON formatted list of 3 related or similar hobbies that work for
-            someone who is {data["age"]} years old, lives in a {locations[data["location"]]} area, is willing to spend ${data["budget"]}, and is willing
-            to invest {availability[data["availability"]]} hours per week on these hobbies.
+            someone who is {data["age"]} years old, lives in a {data["location"]} area, is willing to spend ${data["budget"]}, and is willing
+            to invest {data["availability"]} hours per week on these hobbies.
         """
 
         response = geminiClient.models.generate_content(model="gemini-2.0-flash", contents=prompt)
