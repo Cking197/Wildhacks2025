@@ -6,9 +6,9 @@ import { useRouter } from "next/navigation";
 export default function Hobbies() {
   const router = useRouter(); // Initialize the router
   const [rows, setRows] = useState<
-    { activity: string; experience: string; active: boolean }[]
+    { activity: string; experience: string; editable: boolean }[]
   >([
-    { activity: "", experience: "Beginner", active: false },
+    { activity: "", experience: "Beginner", editable: true },
   ]);
 
   useEffect(() => {
@@ -17,22 +17,22 @@ export default function Hobbies() {
 
   const handleChange = (
     index: number,
-    field: "activity" | "experience" | "active",
-    value: string | boolean
+    field: "activity" | "experience",
+    value: string
   ) => {
     const updatedRows = [...rows];
-    if (field === "activity" && typeof value === "string") {
+    if (field === "activity") {
       updatedRows[index].activity = value;
-    } else if (field === "experience" && typeof value === "string") {
+    } else if (field === "experience") {
       updatedRows[index].experience = value;
-    } else if (field === "active" && typeof value === "boolean") {
-      updatedRows[index].active = value;
     }
     setRows(updatedRows);
   };
 
   const addRow = () => {
-    setRows([...rows, { activity: "", experience: "Beginner", active: false }]);
+    // Set all existing rows to non-editable
+    const updatedRows = rows.map((row) => ({ ...row, editable: false }));
+    setRows([...updatedRows, { activity: "", experience: "Beginner", editable: true }]);
   };
 
   const removeRow = (index: number) => {
@@ -49,6 +49,11 @@ export default function Hobbies() {
 
   const handleFindNewHobbies = () => {
     if (!isButtonDisabled) {
+      // Lock all rows by setting editable to false
+      const updatedRows = rows.map((row) => ({ ...row, editable: false }));
+      setRows(updatedRows);
+
+      // Navigate to the hobbies_new page
       router.push("/hobbies_new");
     }
   };
@@ -90,7 +95,7 @@ export default function Hobbies() {
 
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href="http://localhost:3000/signup"
+            href="http://localhost:3000/profile"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -114,9 +119,6 @@ export default function Hobbies() {
                   Experience
                 </th>
                 <th className="border border-gray-300 px-4 py-2 text-left">
-                  Active
-                </th>
-                <th className="border border-gray-300 px-4 py-2 text-left">
                   Actions
                 </th>
               </tr>
@@ -133,6 +135,7 @@ export default function Hobbies() {
                       }
                       className="w-full border border-gray-300 rounded px-2 py-1"
                       placeholder="Enter activity"
+                      disabled={!row.editable} // Disable input if not editable
                     />
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
@@ -142,20 +145,12 @@ export default function Hobbies() {
                         handleChange(index, "experience", e.target.value)
                       }
                       className="w-full border border-gray-300 rounded px-2 py-1"
+                      disabled={!row.editable} // Disable select if not editable
                     >
                       <option value="Beginner">Beginner</option>
                       <option value="Intermediate">Intermediate</option>
                       <option value="Expert">Expert</option>
                     </select>
-                  </td>
-                  <td className="border border-gray-300 px-4 py-2 text-center">
-                    <input
-                      type="checkbox"
-                      checked={row.active}
-                      onChange={(e) =>
-                        handleChange(index, "active", e.target.checked)
-                      }
-                    />
                   </td>
                   <td className="border border-gray-300 px-4 py-2 text-center">
                     <button
