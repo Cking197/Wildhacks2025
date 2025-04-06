@@ -149,7 +149,7 @@ def create_Tasks():
 
         """TODO: Add activity type (physical, intellectual, etc...)"""
         # print(response.parsed, "\n\n")
-        tasks = [obj.task for obj in response.parsed]
+        tasks = [(obj.task, False) for obj in response.parsed]
 
         hobby = {
             "activity": data["hobby"]["activity"],
