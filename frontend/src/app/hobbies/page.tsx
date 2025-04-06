@@ -26,6 +26,7 @@ export default function Hobbies() {
         });
 
         const data = await response.json();
+        console.log(data)
 
         if (response.ok) {
           // Example: backend returns hobbies like [{ activity: "Tennis", experience: "Intermediate" }, ...]
@@ -47,6 +48,64 @@ export default function Hobbies() {
     fetchData();
   }, []);
 
+  const updateRows = (newRows: { activity: string; experience: string; editable: boolean }[]) => {
+    setRows(newRows);
+    console.log('hi')
+
+    const rows = newRows.slice()
+    if(rows.length == 0){
+      return
+    }
+    while(rows.length != 0 && rows[rows.length - 1].activity === ''){
+      rows.pop()
+    }
+    console.log("Rows updated:", rows);
+
+    const fetchData = async () => {
+      try {
+        const userID = new URL(window.location.href).searchParams.get("userID");
+
+        const response = await fetch("http://127.0.0.1:5000/getUser", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _id: { $oid: userID },
+          }),
+        });
+
+        const data = await response.json();
+        console.log(data)
+
+        if (!response.ok) {
+          setError(data.message || "Failed to load hobbies.");
+        } else {
+          const response = await fetch("http://127.0.0.1:5000/updateUser", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              _id: { $oid: userID },
+              name: data.name,
+              pastHobbies: rows,
+              activeHobbies: data.activeHobbies,
+              location: data.location,
+              availability: data.availability,
+              budget: data.budget,
+              age: data.age
+            }),
+          });
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Something went wrong while fetching data.");
+      }
+    };
+    fetchData();
+  };
+
   const handleChange = (
     index: number,
     field: "activity" | "experience",
@@ -64,12 +123,12 @@ export default function Hobbies() {
   const addRow = () => {
     // Set all existing rows to non-editable
     const updatedRows = rows.map((row) => ({ ...row, editable: false }));
-    setRows([...updatedRows, { activity: "", experience: "Beginner", editable: true }]);
+    updateRows([...updatedRows, { activity: "", experience: "Beginner", editable: true }]);
   };
 
   const removeRow = (index: number) => {
     const updatedRows = rows.filter((_, i) => i !== index);
-    setRows(updatedRows);
+    updateRows(updatedRows);
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -83,7 +142,7 @@ export default function Hobbies() {
     if (!isButtonDisabled) {
       // Lock all rows by setting editable to false
       const updatedRows = rows.map((row) => ({ ...row, editable: false }));
-      setRows(updatedRows);
+      updateRows(updatedRows);
 
       // Navigate to the hobbies_new page
       router.push("/hobbies_new");
