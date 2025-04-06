@@ -27,7 +27,7 @@ export default function AboutUs() {
             <h2 className="text-xl font-[family-name:var(--font-geist-mono)] font-semibold text-gray-800">
               Eiko Reisz
             </h2>
-            <p className="text-sm text-gray-600">Developer</p>
+            <p className="text-sm text-gray-600">Backend Developer</p>
           </div>
           <div className="flex flex-col items-center">
             <Image
@@ -40,7 +40,7 @@ export default function AboutUs() {
             <h2 className="text-xl font-[family-name:var(--font-geist-mono)] font-semibold text-gray-800">
               Connor King
             </h2>
-            <p className="text-sm text-gray-600">Developer</p>
+            <p className="text-sm text-gray-600">Backend Developer</p>
           </div>
           <div className="flex flex-col items-center">
             <Image
@@ -53,7 +53,7 @@ export default function AboutUs() {
             <h2 className="text-xl font-[family-name:var(--font-geist-mono)] font-semibold text-gray-800">
               Samuel Grayson
             </h2>
-            <p className="text-sm text-gray-600">Developer</p>
+            <p className="text-sm text-gray-600">Frontend Developer</p>
           </div>
           <div className="flex flex-col items-center">
             <Image
@@ -66,7 +66,7 @@ export default function AboutUs() {
             <h2 className="text-xl font-[family-name:var(--font-geist-mono)] font-semibold text-gray-800">
               Jeri Huang
             </h2>
-            <p className="text-sm text-gray-600">Developer</p>
+            <p className="text-sm text-gray-600">Frontend Developer</p>
           </div>
         </div>
         <button
