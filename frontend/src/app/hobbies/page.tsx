@@ -1,8 +1,10 @@
 "use client";
 
 import React, { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Hobbies() {
+  const router = useRouter(); // Initialize the router
   const [rows, setRows] = useState<
     { activity: string; experience: string; active: boolean }[]
   >([
@@ -43,20 +45,80 @@ export default function Hobbies() {
     console.log("Hobbies Data Submitted:", rows);
   };
 
+  const isButtonDisabled = rows.every((row) => row.activity.trim() === "");
+
+  const handleFindNewHobbies = () => {
+    if (!isButtonDisabled) {
+      router.push("/hobbies_new");
+    }
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100 font-[family-name:var(--font-geist-sans)]">
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 font-[family-name:var(--font-geist-sans)]">
+      {/* Main Content */}
       <div className="bg-white p-8 rounded shadow-md w-full max-w-3xl">
         <h1 className="text-2xl font-[family-name:var(--font-geist-mono)] font-bold mb-6 text-center">
-          Hobbies
+          Past and Current Hobbies
         </h1>
+
+        {/* Buttons Section */}
+        <div className="flex justify-center gap-4 items-center flex-wrap mb-6">
+          <button
+            className="rounded-full border border-black px-4 py-2 text-black bg-gray-300 cursor-not-allowed"
+            disabled
+          >
+            Hobbies
+          </button>
+
+          <a
+            className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+            href="http://localhost:3000/tasks"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Tasks
+          </a>
+
+          <a
+            className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+            href="http://localhost:3000/hobbies_new"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            New Hobbies
+          </a>
+
+          <a
+            className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+            href="http://localhost:3000/signup"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Profile
+          </a>
+        </div>
+
+        {/* Subheading */}
+        <p className="text-center text-lg font-[family-name:var(--font-geist-mono)] font-medium mb-6">
+          Add all current and previous hobbies you have had below
+        </p>
+
         <form onSubmit={handleSubmit}>
           <table className="w-full border-collapse border border-gray-300 mb-4">
             <thead>
               <tr>
-                <th className="border border-gray-300 px-4 py-2 text-left">Activity</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Experience</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Active</th>
-                <th className="border border-gray-300 px-4 py-2 text-left">Actions</th>
+                <th className="border border-gray-300 px-4 py-2 text-left">
+                  Activity
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-left">
+                  Experience
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-left">
+                  Active
+                </th>
+                <th className="border border-gray-300 px-4 py-2 text-left">
+                  Actions
+                </th>
               </tr>
             </thead>
             <tbody>
@@ -117,10 +179,19 @@ export default function Hobbies() {
               Add Row
             </button>
             <button
-              type="submit"
-              className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 transition"
+              type="button"
+              onClick={handleFindNewHobbies}
+              disabled={isButtonDisabled}
+              className={`text-white px-4 py-2 rounded transition ${
+                isButtonDisabled
+                  ? "bg-gray-300 cursor-not-allowed"
+                  : "hover:opacity-90"
+              }`}
+              style={{
+                backgroundColor: isButtonDisabled ? "#ccc" : "#db4d3a",
+              }}
             >
-              Submit
+              Find New Hobbies!
             </button>
           </div>
         </form>
