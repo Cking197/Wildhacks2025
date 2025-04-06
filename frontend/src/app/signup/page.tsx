@@ -26,7 +26,7 @@ export default function Page() {
     setError(""); // Clear error when user modifies input
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     // Email validation
@@ -53,8 +53,36 @@ export default function Page() {
     setError("");
     console.log("Form Data Submitted:", formData);
 
-    // Navigate to the next page
-    router.push("/hobbies");
+    try {
+      const response = await fetch("http://127.0.0.1:5000/createUser", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          name: formData.name, 
+          pastHobbies: [], 
+          activeHobbies: [],
+          location: formData.location,
+          availability: formData.availability,
+          age: formData.age,
+          budget: formData.budget
+        }),
+      });
+  
+      const data = await response.json();
+  
+      if (response.ok) {
+        console.log("User created:", data);
+        // Navigate to the next page
+        router.push("/hobbies");
+      } else {
+        setError(data.message || "Failed to create user.");
+      }
+    } catch (err) {
+      console.error("Error submitting form:", err);
+      setError("An error occurred while submitting the form.");
+    }
   };
 
   return (
