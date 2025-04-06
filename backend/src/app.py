@@ -74,11 +74,11 @@ def get_user():
         print("Error:", e)
         return jsonify(message="Error: User not found"), 500
 
-@app.route("/deleteUser", methods=["GET"])
+@app.route("/deleteUser", methods=["DELETE"])
 def delete_user():
     try:
         data = request.get_json()
-        user_id = ObjectId(data["_id"])
+        user_id = ObjectId(data["_id"]["$oid"])
         result = users.delete_one({"_id": user_id})
         if result.deleted_count == 1:
             return jsonify(message="User deleted!")
