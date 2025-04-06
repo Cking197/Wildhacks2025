@@ -1,7 +1,21 @@
+'use client'
+
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
 export default function Page() {
+  const [tasks, setTasks] = useState([
+    { id: 1, text: "Sample Task 1", completed: false, deadline: new Date() },
+    { id: 2, text: "Sample Task 2", completed: true, deadline: new Date() },
+  ]);
+
+  const toggleTask = (id: number) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
   
   return (
     <div className="flex items-center justify-center min-h-screen p-8 pb-20 sm:p-20 font-[family-name:var(--font-geist-sans)]">
