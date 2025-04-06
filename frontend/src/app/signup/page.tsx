@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
 
 export default function Page() {
@@ -15,6 +15,10 @@ export default function Page() {
   });
 
   const [error, setError] = useState("");
+
+  useEffect(() => {
+    console.log("Signup Page Mounted");
+  }, []); // Empty dependency array ensures this runs only once when the component mounts
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
