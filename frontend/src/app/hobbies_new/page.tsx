@@ -1,3 +1,5 @@
+"use client";
+
 import Image from "next/image";
 
 export default function Page() {
@@ -46,9 +48,9 @@ export default function Page() {
             
           </div>
           
-          <p>Here are some hobbies you could try. 
-            Select the hobbies you are interested in starting. 
-            </p>
+          <p>
+          Add hobbies you would like to start to Tasks. Refresh all to see three new hobbies.
+          </p>
 
           {/* Three White Box Containers */}
           <div className="flex flex-row gap-6">
@@ -56,13 +58,21 @@ export default function Page() {
               <h3 className="text-lg font-semibold">Activity 1</h3>
               <p>Time: {}</p>
               <p>Description:</p>
+              {/* Text box for description from Gemini API */}
+              {/* <textarea
+                value={dataFromBackend} // Replace with the actual state holding backend data
+                readOnly
+                className="w-full border border-gray-300 rounded p-4 text-sm resize-none overflow-auto mt-2"
+                style={{ height: "auto" }}
+                rows={Math.max(3, dataFromBackend.split("\n").length)} // Dynamically adjust rows based on content
+              /> */}
               <a
               className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto mt-4"
               href="http://localhost:3000/tasks"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Add hobby 
+              Add
             </a>
             </div>
 
@@ -71,13 +81,21 @@ export default function Page() {
               <h3 className="text-lg font-semibold">Hobby 2</h3>
               <p>Time: {}</p>
               <p>Description:</p>
+              {/* Text box for description from Gemini API */}
+              {/* <textarea
+                value={dataFromBackend} // Replace with the actual state holding backend data
+                readOnly
+                className="w-full border border-gray-300 rounded p-4 text-sm resize-none overflow-auto mt-2"
+                style={{ height: "auto" }}
+                rows={Math.max(3, dataFromBackend.split("\n").length)} // Dynamically adjust rows based on content
+              /> */}
             <a
               className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto mt-4"
               href="http://localhost:3000/tasks"
               target="_blank"
               rel="noopener noreferrer"
             >
-              Add hobby
+              Add
             </a>
             </div>
 
@@ -100,7 +118,7 @@ export default function Page() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Add hobby
+              Add
             </a>
             </div>
           </div>
@@ -109,14 +127,15 @@ export default function Page() {
                     <a
                       className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
                       href="/signup"
+                      style={{ backgroundColor: "#db4d3a" }}
                     >
-                      Get started
+                      See tasks
                     </a>
                     <a
                       className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
                       href="/signup"
                     >
-                      Refresh all hobbies
+                      Refresh all
                     </a>
                   </div>
 

@@ -22,7 +22,7 @@ export default function Page() {
       {/* White Box Container */}
       <div className="bg-white shadow-lg rounded-lg p-8 sm:p-12 w-full min-h-full max-w-5xl">
         <main className="flex flex-col gap-[32px] row-start-2 items-center">
-  
+          {/* Navigation Links */}
           <div className="flex gap-4 items-center flex-col sm:flex-row">
             <a
               className="rounded-lg border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base px-6 py-3"
@@ -34,8 +34,7 @@ export default function Page() {
             </a>
 
             <a
-              className="rounded-lg border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base px-6 py-3"
-              href="http://localhost:3000/tasks"
+              className="rounded-lg border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base px-6 py-3 opacity-50 hover:opacity-100"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -43,7 +42,8 @@ export default function Page() {
             </a>
 
             <a
-              className="rounded-lg border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base px-6 py-3 opacity-50 hover:opacity-100"
+              className="rounded-lg border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base px-6 py-3"
+              href="http://localhost:3000/hobbies_new"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -58,123 +58,72 @@ export default function Page() {
             >
               Profile
             </a>
-            
           </div>
-          
-          <p>Here are some hobbies you could try. 
-            Click on a hobby to learn about how to get started.  
-            </p>
 
-          {/* Three White Box Containers */}
+          {/* Introductory Text */}
+          <p>Here are some tasks to get started with your hobbies.</p>
+
+          {/* Render the white boxes */}
           <div className="flex flex-row gap-6">
-            <div className="bg-gray-100 shadow-md rounded-md p-6 flex-1">
-              <h3 className="text-lg font-semibold">Activity 1</h3>
-
-              <div className="flex flex-col gap-4">
-                {tasks.map((task) => (
-                  <div
-                    key={task.id}
-                    className="flex items-center justify-between bg-gray-100 shadow-md rounded-md p-4"
+            {tasks.map((task, index) => (
+              <div key={task.id} className="bg-gray-100 shadow-md rounded-md p-6 flex-1">
+                <h3 className="text-lg font-semibold">{`Activity ${index + 1}`}</h3>
+                {/* Render the checklist */}
+                <div className="checklist flex flex-col gap-4 mt-4">
+                  {task.checklist?.map((item, itemIndex) => (
+                    <div key={itemIndex} className="flex flex-col bg-gray-50 shadow-sm rounded-md p-4">
+                      <label
+                        className={`flex items-center gap-2 ${
+                          item.completed ? "text-gray-400 line-through" : "text-black"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={item.completed}
+                          onChange={() => {
+                            const updatedChecklist = task.checklist.map((checkItem, i) =>
+                              i === itemIndex ? { ...checkItem, completed: !checkItem.completed } : checkItem
+                            );
+                            setTasks((prevTasks) =>
+                              prevTasks.map((t) =>
+                                t.id === task.id ? { ...t, checklist: updatedChecklist } : t
+                              )
+                            );
+                          }}
+                          className="w-4 h-4"
+                        />
+                        {item.text}
+                      </label>
+                    </div>
+                  ))}
+                </div>
+                {/* Remove Button */}
+                <div className="mt-6">
+                  <button
+                    className="rounded-lg bg-red-500 text-white px-4 py-2 hover:bg-red-600"
+                    onClick={() => removeWhiteBox(task.id)}
                   >
-                    <label
-                      className={`flex items-center gap-2 ${
-                        task.completed ? "text-gray-400 line-through" : "text-black"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={task.completed}
-                        onChange={() => toggleTask(task.id)}
-                        className="w-4 h-4"
-                      />
-                      {task.text}
-                    </label>
-                    <p className="text-sm text-gray-500">
-                      Deadline: {new Date(task.deadline).toLocaleString()}
-                    </p>
-                  </div>
-                ))}
+                    Remove
+                  </button>
+                </div>
               </div>
-
-              <a
-              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto mt-4"
-              href="http://localhost:3000/tasks"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Click to remove from tasks
-            </a>
-            </div>
-
-
-            <div className="bg-gray-100 shadow-md rounded-md p-6 flex-1">
-              <h3 className="text-lg font-semibold">Hobby 2</h3>
-
-
-
-            <a
-              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto mt-4"
-              href="http://localhost:3000/tasks"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Click to remove from tasks
-              </a>
-            </div>
-
-
-            <div className="bg-gray-100 shadow-md rounded-md p-6 flex-1">
-              <h3 className="text-lg font-semibold">Hobby 3</h3>
-
-              <div className="flex flex-col gap-4">
-                {tasks.map((task) => (
-                  <div
-                    key={task.id}
-                    className="flex items-center justify-between bg-gray-100 shadow-md rounded-md p-4"
-                  >
-                    <label
-                      className={`flex items-center gap-2 ${
-                        task.completed ? "text-gray-400 line-through" : "text-black"
-                      }`}
-                    >
-                      <input
-                        type="checkbox"
-                        checked={task.completed}
-                        onChange={() => toggleTask(task.id)}
-                        className="w-4 h-4"
-                      />
-                      {task.text}
-                    </label>
-                    <p className="text-sm text-gray-500">
-                      Deadline: {new Date(task.deadline).toLocaleString()}
-                    </p>
-                  </div>
-                ))}
-              </div>
-
-            <a
-              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto mt-4"
-              href="http://localhost:3000/hobby3_tasks"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Click to remove from tasks
-              </a>
-            </div>
+            ))}
           </div>
 
+          {/* Find New Hobby Button */}
           <div className="flex gap-4 items-center flex-col sm:flex-row">
-                    <a
-                      className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-                      href="/signup"
-                    >
-                      Get started
-                    </a>
-                  </div>
-
+            <a
+              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
+              href="/hobbies_new"
+            >
+              Find New Hobby
+            </a>
+          </div>
         </main>
+
+        {/* Footer */}
         <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center mt-8">
-        <a
+          <a
             className="flex items-center gap-2 hover:underline hover:underline-offset-4"
             href="http://localhost:3000/about_us"
             target="_blank"
@@ -191,6 +140,6 @@ export default function Page() {
           </a>
         </footer>
       </div>
-      </div>
+    </div>
   );
 }
