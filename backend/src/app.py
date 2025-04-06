@@ -29,8 +29,8 @@ class HobbyProposal(BaseModel):
     budget: str
 
 #Hobby Proposal
-class HobbyTasks(BaseModel):
-    task: list
+class HobbyTask(BaseModel):
+    task: str
 
 
 # Send a ping to confirm a successful connection
@@ -105,14 +105,15 @@ def delete_user():
 @app.route("/createHobbies", methods=["POST"])
 def create_Hobbies():
     try:
-        data = get_user() 
-        data=data.get_json() 
+        user = get_user() 
+        data=user.get_json() 
 
         hobbies = ', '.join([obj["activity"] for obj in data["pastHobbies"]])
         
         prompt = f"""As someone who has previously spent time {hobbies}, please give me a JSON formatted list of 3 related or similar hobbies that work for
             someone who is {data["age"]} years old, lives in a {data["location"]} area, is willing to spend ${data["budget"]}, and is willing
-            to invest {data["availability"]} hours per week on these hobbies. Please include only an "activity," "description," "time," and "budget" field.
+            to invest {data["availability"]} hours per week on these hobbies. Please include only an "activity," "description," "time," (per unit of relevant 
+            time) and "budget" (per relevant unit) field. Please do not add additional notes for "time" and "budget."
         """
 
         response = geminiClient.models.generate_content(
@@ -122,8 +123,8 @@ def create_Hobbies():
                 'response_mime_type': 'application/json',
                 'response_schema': list[HobbyProposal],
             },)
-        return jsonify(response.text)
-    except:
+        return response.text
+    except Exception as e:
         print("Error:", e)
         return jsonify(message="Error: Unable to create hobbies"), 500
     
@@ -131,11 +132,10 @@ def create_Hobbies():
 def create_Tasks():
     try:
         data = request.get_json()
-        hobby = data["hobby"]
+        hobbyProposal = data["hobby"]
         
-        prompt = f"""I'm really interested in {hobby["activity"]}, but have no idea where to start. Please create a JSON formatted list of at least
-            2 tasks to help me figure out where or how to start given my time constraint of {hobby["time"]} weekly hours and cost constraint of 
-            ${hobby["cost"]}. Please include only an "tasks" field.
+        prompt = f"""I'm really interested in {hobbyProposal["activity"]}, with the following description: {hobbyProposal["description"]}but have no idea where to start. Please create a JSON formatted list of at least
+            2 tasks to help me figure out where or how to start. Please include only a "tasks" field.
         """
 
         response = geminiClient.models.generate_content(
@@ -143,11 +143,39 @@ def create_Tasks():
             contents=prompt, 
             config={
                 'response_mime_type': 'application/json',
-                'response_schema': list[HobbyTasks],
+                'response_schema': list[HobbyTask],
             },)
-        print(response.text)
-        return jsonify(response.txt)
-    except:
+        
+
+        """TODO: Add activity type (physical, intellectual, etc...)"""
+        # print(response.parsed, "\n\n")
+        tasks = [obj.task for obj in response.parsed]
+
+        hobby = {
+            "activity": data["hobby"]["activity"],
+            "experience": "Started",
+            "cost": data["hobby"]["budget"],
+            "time": data["hobby"]["time"],
+            "active": True,
+            "tasks": tasks
+        }
+
+        user = get_user() 
+        data=user.get_json()
+        data["_id"] = {"$oid": data["_id"]}
+
+        # print("before: ", data["activeHobbies"])
+        data["activeHobbies"].append(hobby)
+        # print("after: ", data["activeHobbies"])
+
+        with app.test_client() as client:
+            new_body = data
+            
+            response = client.post('/updateUser', json=new_body)
+
+            return response.get_json()  # or response.get_json()
+        
+    except Exception as e:
         print("Error:", e)
         return jsonify(message="Error: Unable to create tasks"), 500
 
