@@ -2,12 +2,15 @@
 wildhacks repository
 
 ## Contributors
-Eiko Reisz, Connor King, Samuel Grayson, Jeri ...
+Eiko Reisz, Connor King, Samuel Grayson, Jeri Huang
 
 ## Dependencies
+- flask
 - flask_cors
 - pymongo
 - python-dotenv
+- google-genai
 
 ## Acknowledgements
-N/A
+- Reference repo: https://github.com/laurasfelix/example-learning
+- Gen AI was used in the debugging of this project
