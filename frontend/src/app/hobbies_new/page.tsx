@@ -61,6 +61,8 @@ setAddedHobbies(new Array(hobbyData.length).fill(false)); // Initialize addedHob
       } catch (err) {
         console.error(err);
         setError("Something went wrong while fetching data.");
+      } finally {
+        setLoading(false); // Set loading to false after fetching is complete
       }
     };
 
@@ -94,7 +96,7 @@ setAddedHobbies(new Array(hobbyData.length).fill(false)); // Initialize addedHob
 
         if (response.ok) {
           console.log("Task created successfully:", data);
-const updatedAddedHobbies = [...addedHobbies];
+          const updatedAddedHobbies = [...addedHobbies];
           updatedAddedHobbies[key] = true; // Mark the hobby as added
           setAddedHobbies(updatedAddedHobbies);
         } else {
@@ -111,8 +113,8 @@ const updatedAddedHobbies = [...addedHobbies];
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 font-[family-name:var(--font-geist-sans)]">
-      {/* Main Content */}
-      <div className="bg-white p-8 rounded shadow-md w-full max-w-3xl">
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-[1250px] mx-auto">
+        {/* Main Content */}
         <h1 className="text-2xl font-[family-name:var(--font-geist-mono)] font-bold mb-6 text-center">
           Discover New Hobbies
         </h1>
@@ -148,68 +150,72 @@ const updatedAddedHobbies = [...addedHobbies];
           </a>
         </div>
 
-        {/* Subheading */}
-        <p className="text-center text-lg font-[family-name:var(--font-geist-mono)] font-medium mb-6">
-          Add hobbies you would like to start to Tasks. Refresh to see three new hobbies.
-        </p>
+        {/* Loading Warning */}
+        {loading && (
+          <div className="bg-yellow-100 text-yellow-800 px-4 py-2 rounded mb-6 text-center">
+            Loading hobbies, please wait...
+          </div>
+        )}
 
         {/* Hobby Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {hobbies.map((hobby, index) => (
-            <div
-              key={index}
-              className="bg-gray-100 shadow-md rounded-md p-6 flex flex-col items-start"
-            >
-              <p className="text-lg font-semibold mb-2">{hobby.title}</p>
-              <div className="mb-2">
-                <label className="block text-sm font-medium text-gray-700 font-bold">
-                  Description:
-                </label>
-                <p className="text-sm">{hobby.description}</p>
-              </div>
-              <div className="mb-2">
-                <label className="block text-sm font-medium text-gray-700 font-bold">
-                  Cost:
-                </label>
-                <p className="text-sm">{hobby.cost}</p>
-              </div>
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 font-bold">
-                  Time:
-                </label>
-                <p className="text-sm">{hobby.time}</p>
-              </div>
-<div className="flex items-center">
-              <a
-                className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-                onClick={() => handleCreateTask(index)} // Pass the index to the function
+        {!loading && (
+          <div className="flex flex-col gap-6 w-full">
+            {hobbies.map((hobby, index) => (
+              <div
+                key={index}
+                className="bg-gray-100 shadow-md rounded-md p-6 flex flex-col items-start w-full"
               >
-                Add
-              </a>
-{addedHobbies[index] && (
-                  <span className="ml-2 text-green-500 font-bold">✔</span>
-                )}
+                <p className="text-lg font-semibold mb-2">{hobby.title}</p>
+                <div className="mb-2">
+                  <label className="block text-sm font-medium text-gray-700 font-bold">
+                    Description:
+                  </label>
+                  <p className="text-sm">{hobby.description}</p>
+                </div>
+                <div className="mb-2">
+                  <label className="block text-sm font-medium text-gray-700 font-bold">
+                    Cost:
+                  </label>
+                  <p className="text-sm">{hobby.cost}</p>
+                </div>
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 font-bold">
+                    Time:
+                  </label>
+                  <p className="text-sm">{hobby.time}</p>
+                </div>
+                <div className="flex items-center">
+                  <a
+                    className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+                    onClick={() => handleCreateTask(index)} // Pass the index to the function
+                  >
+                    Add
+                  </a>
+                  {addedHobbies[index] && (
+                    <span className="ml-2 text-green-500 font-bold">✔</span>
+                  )}
+                </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
+      </div>
 
-        {/* Footer Buttons */}
-        <div className="flex justify-center gap-4 items-center flex-wrap mt-6">
-          <a
-            className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href={`/tasks?userID=${userID}`}
-            style={{ backgroundColor: "#db4d3a", color: "white" }}
-          >
-            See Tasks
-          </a>
-          <a
-            className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href={`/hobbies_new?userID=${userID}`}
-          >
-            Refresh All
-          </a>
-        </div>
+      {/* Footer Buttons */}
+      <div className="flex justify-center gap-4 items-center flex-wrap mt-6">
+        <a
+          className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+          href={`/tasks?userID=${userID}`}
+          style={{ backgroundColor: "#db4d3a", color: "white" }}
+        >
+          See Tasks
+        </a>
+        <a
+          className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+          href={`/hobbies_new?userID=${userID}`}
+        >
+          Refresh All
+        </a>
       </div>
 
       {/* Footer */}
