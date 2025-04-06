@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useRouter } from "next/navigation"; // Import useRouter for navigation
 
 export default function Page() {
@@ -15,12 +15,8 @@ export default function Page() {
   });
 
   const [error, setError] = useState("");
-  const [showPopup, setShowPopup] = useState(true); // State to manage popup visibility
-  let userID = "12345"; // Example user ID (replace with actual logic if needed)
-
-  useEffect(() => {
-    console.log("Signup Page Mounted");
-  }, []); // Empty dependency array ensures this runs only once when the component mounts
+  const [showPopup, setShowPopup] = useState(false); // State to manage popup visibility
+  const [userID, setUserID] = useState(""); // State to store the user ID
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = e.target;
@@ -76,14 +72,11 @@ export default function Page() {
 
       if (response.ok) {
         console.log("User created:", data);
-        // Navigate to the next page
-        router.push("/hobbies");
+        setUserID(data["_id"]); // Set the user ID from the response
+        setShowPopup(true); // Show the popup
       } else {
         setError(data.message || "Failed to create user.");
       }
-
-      userID = data["_id"]; // Assuming the response contains the user ID
-
     } catch (err) {
       console.error("Error submitting form:", err);
       setError("An error occurred while submitting the form.");
@@ -102,7 +95,7 @@ export default function Page() {
             >
               X
             </button>
-            <h2 className="text-lg font-bold mb-4">Welcome!</h2>
+            <h2 className="text-lg font-bold mb-4">User Created Successfully!</h2>
             <p className="text-sm">Your User ID is:</p>
             <p className="text-lg font-semibold">{userID}</p>
           </div>
