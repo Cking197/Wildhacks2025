@@ -48,6 +48,8 @@ export default function Page() {
         if (response.ok) {
           const hobbyData = data.pastHobbies.map((hobby: any) => ({
             activity: hobby.activity,
+          const hobbyData = data.map((hobby: any) => ({
+            title: hobby.activity,
             description: hobby.description,
             cost: hobby.budget,
             time: hobby.time,
@@ -64,6 +66,45 @@ export default function Page() {
 
     fetchData();
   }, []);
+
+  const handleCreateTask(key) {
+    const fetchData = async () => {
+      try {
+        const userIDFromURL = new URL(window.location.href).searchParams.get("userID");
+        setUserID(userIDFromURL); // Save userID for use in URLs
+
+        const response = await fetch("http://127.0.0.1:5000/createTasks", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _id: { $oid: userIDFromURL },
+
+            hobby: {
+              activity: hobbies[key].title,
+              description: hobbies[key].description,
+              time: hobbies[key].time,
+              budget: hobbies[key].title
+            }
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+        
+        } else {
+          setError(data.message || "Failed to create hobby.");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Something went wrong while fetching data.");
+      }
+    };
+
+    fetchData();
+  }
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 font-[family-name:var(--font-geist-sans)]">
@@ -137,6 +178,7 @@ export default function Page() {
               </div>
               <a
                 className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+                onClick={handleCreateTask(key)}
               >
                 Add
               </a>
