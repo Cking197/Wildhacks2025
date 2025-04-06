@@ -83,6 +83,11 @@ export default function Page() {
     }
   };
 
+  const handlePopupClose = () => {
+    // Navigate to the hobbies page with the userID as a query parameter
+    router.push(`/hobbies?userID=${userID}`);
+  };
+
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 font-[family-name:var(--font-geist-sans)]">
       {/* Popup */}
@@ -90,7 +95,7 @@ export default function Page() {
         <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
           <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full relative">
             <button
-              onClick={() => setShowPopup(false)}
+              onClick={handlePopupClose}
               className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
             >
               X
