@@ -91,11 +91,16 @@ def delete_user():
 @app.route("/createHobbies", methods=["POST"])
 def create_Hobbies():
     try:
-        data = request.get_json()
+        data = get_user()
+        data=data.get_json()
         locations = ["urban", "suburban", "rural"]
         availability = ["0-3", "3-6", "6+"]
+        
+        print(data)
+        return data
 
         hobbies = ', '.join([obj["activity"] for obj in data["pastHobbies"]])
+        print(hobbies)
         
         prompt = f"""As someone who has previously spent time {hobbies}, please give me a JSON formatted list of 3 related or similar hobbies that work for
             someone who is {data["age"]} years old, lives in a {locations[data["location"]]} area, is willing to spend ${data["budget"]}, and is willing
@@ -110,7 +115,7 @@ def create_Hobbies():
         return jsonify(message="Error: Unable to create hobbies"), 500
     
 @app.route("/createTasks", methods=["POST"])
-def create_Hobbies():
+def create_Tasks():
     try:
         data = request.get_json()
         hobby = data["hobby"]
