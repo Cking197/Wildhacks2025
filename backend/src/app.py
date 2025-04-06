@@ -6,6 +6,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from dotenv import load_dotenv
 from google import genai
+from pydantic import BaseModel
 import os
 
 
@@ -18,6 +19,19 @@ uri = os.getenv("MONGODB_URI")
 # Create a new client and connect to the server
 mongoClient = MongoClient(uri, server_api=ServerApi('1'))
 geminiClient = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+
+#Hobby Proposal
+class HobbyProposal(BaseModel):
+    activity: str
+    description: str
+    time: str
+    budget: str
+
+#Hobby Proposal
+class HobbyTask(BaseModel):
+    task: str
+
 
 # Send a ping to confirm a successful connection
 try:
@@ -88,13 +102,83 @@ def delete_user():
         print("Error:", e)
         return jsonify(message="Error: User not deleted"), 500
 
-"""IN PROGRESS: TODO
-response = geminiClient.models.generate_content(
-    model="gemini-2.0-flash", contents="Explain how AI works in a few words"
-)
+@app.route("/createHobbies", methods=["POST"])
+def create_Hobbies():
+    try:
+        user = get_user() 
+        data=user.get_json() 
 
-print(response.text)
-"""
+        hobbies = ', '.join([obj["activity"] for obj in data["pastHobbies"]])
+        
+        prompt = f"""As someone who has previously spent time {hobbies}, please give me a JSON formatted list of 3 related or similar hobbies that work for
+            someone who is {data["age"]} years old, lives in a {data["location"]} area, is willing to spend ${data["budget"]}, and is willing
+            to invest {data["availability"]} hours per week on these hobbies. Please include only an "activity," "description," "time," (per unit of relevant 
+            time) and "budget" (per relevant unit) field. Please do not add additional notes for "time" and "budget."
+        """
+
+        response = geminiClient.models.generate_content(
+            model="gemini-2.0-flash", 
+            contents=prompt, 
+            config={
+                'response_mime_type': 'application/json',
+                'response_schema': list[HobbyProposal],
+            },)
+        return response.text
+    except Exception as e:
+        print("Error:", e)
+        return jsonify(message="Error: Unable to create hobbies"), 500
+    
+@app.route("/createTasks", methods=["POST"])
+def create_Tasks():
+    try:
+        data = request.get_json()
+        hobbyProposal = data["hobby"]
+        
+        prompt = f"""I'm really interested in {hobbyProposal["activity"]}, with the following description: {hobbyProposal["description"]}but have no idea where to start. Please create a JSON formatted list of at least
+            2 tasks to help me figure out where or how to start. Please include only a "tasks" field.
+        """
+
+        response = geminiClient.models.generate_content(
+            model="gemini-2.0-flash", 
+            contents=prompt, 
+            config={
+                'response_mime_type': 'application/json',
+                'response_schema': list[HobbyTask],
+            },)
+        
+
+        """TODO: Add activity type (physical, intellectual, etc...)"""
+        # print(response.parsed, "\n\n")
+        tasks = [obj.task for obj in response.parsed]
+
+        hobby = {
+            "activity": data["hobby"]["activity"],
+            "experience": "Started",
+            "cost": data["hobby"]["budget"],
+            "time": data["hobby"]["time"],
+            "active": True,
+            "tasks": tasks
+        }
+
+        user = get_user() 
+        data=user.get_json()
+        data["_id"] = {"$oid": data["_id"]}
+
+        # print("before: ", data["activeHobbies"])
+        data["activeHobbies"].append(hobby)
+        # print("after: ", data["activeHobbies"])
+
+        with app.test_client() as client:
+            new_body = data
+            
+            response = client.post('/updateUser', json=new_body)
+
+            return response.get_json()  # or response.get_json()
+        
+    except Exception as e:
+        print("Error:", e)
+        return jsonify(message="Error: Unable to create tasks"), 500
+
 
 if __name__ == "__main__":
     app.run(debug=True)

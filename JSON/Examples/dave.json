@@ -3,29 +3,22 @@
     "pastHobbies": [
         {
             "activity": "Baseball",
-            "experience": {
-                "$numberInt": "1"
-            },
+            "experience":"low",
             "cost": {
                 "$numberInt": "70"
             },
-            "time": {
-                "$numberInt": "2"
-            },
+            "time": "6+",
             "active": false,
             "tasks": []
         },
         {
             "activity": "Painting",
-            "experience": {
-                "$numberInt": "0"
-            },
+            "experience": "low",
+
             "cost": {
                 "$numberInt": "20"
             },
-            "time": {
-                "$numberInt": "0"
-            },
+            "time": "0-3",
             "active": true,
             "tasks": [
                 {
@@ -40,12 +33,8 @@
         }
     ],
     "activeHobbies": [],
-    "location": {
-        "$numberInt": "0"
-    },
-    "availability": {
-        "$numberInt": "0"
-    },
+    "location": "urban",
+    "availability": "low",
     "budget": {
         "$numberInt": "54"
     },
