@@ -6,12 +6,12 @@ import Image from "next/image";
 export default function Page() {
   const [tasks, setTasks] = useState([]); // State to store tasks fetched from the backend
   const [activities, setActivities] = useState<
-      { activity: string; task: [string] }[]
-    >([]);
+    { activity: string; tasks: { label: string; completed: boolean }[] }[]
+  >([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState(""); // State to handle errors
   const [userID, setUserID] = useState<string | null>(null); // State to store the userID
-  const tasksPerPage = 3;
+  const tasksPerPage = 1;
 
   // Fetch tasks from the backend
   useEffect(() => {
@@ -20,17 +20,31 @@ export default function Page() {
         const userIDFromURL = new URL(window.location.href).searchParams.get("userID");
         setUserID(userIDFromURL); // Save userID for use in URLs
 
-        const response = await fetch("http://127.0.0.1:5000/getUser"); // Replace with your backend endpoint
+        const response = await fetch("http://127.0.0.1:5000/getUser", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _id: { $oid: userIDFromURL },
+          }),
+        });
+
         if (!response.ok) {
           throw new Error("Failed to fetch tasks");
         }
         const data = await response.json();
-        if (data.activeHobbies && Array.isArray(data.activeHobbies.tasks)) {
-          const activityData  = data.activeHobbies.map((hobby: any) => ({
+
+        if (data.activeHobbies && Array.isArray(data.activeHobbies)) {
+          const activityData = data.activeHobbies.map((hobby: any) => ({
             activity: hobby.activity,
-            tasks: hobby.tasks
+            tasks: hobby.tasks.map((task: any) => ({
+              label: task[0] || "Task",
+            //  value: task[1] || "No description provided",
+              completed: task[1] || false,
+            })),
           }));
-          setActivities(activityData)
+          setActivities(activityData);
         } else {
           throw new Error("Invalid tasks data format");
         }
@@ -43,25 +57,25 @@ export default function Page() {
     fetchTasks();
   }, []);
 
-  const toggleFieldCompletion = (taskId: number, fieldIndex: number) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId
+  const toggleFieldCompletion = (activityIndex: number, taskIndex: number) => {
+    setActivities((prevActivities) =>
+      prevActivities.map((activity, aIndex) =>
+        aIndex === activityIndex
           ? {
-              ...task,
-              fields: task.fields.map((field, index) =>
-                index === fieldIndex
-                  ? { ...field, completed: !field.completed }
-                  : field
+              ...activity,
+              tasks: activity.tasks.map((task, tIndex) =>
+                tIndex === taskIndex
+                  ? { ...task, completed: !task.completed }
+                  : task
               ),
             }
-          : task
+          : activity
       )
     );
   };
 
   const handleNextPage = () => {
-    if ((currentPage + 1) * tasksPerPage < tasks.length) {
+    if ((currentPage + 1) * tasksPerPage < activities.length) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -72,7 +86,7 @@ export default function Page() {
     }
   };
 
-  const visibleTasks = tasks.slice(
+  const visibleActivities = activities.slice(
     currentPage * tasksPerPage,
     (currentPage + 1) * tasksPerPage
   );
@@ -129,32 +143,31 @@ export default function Page() {
         </p>
 
         {/* Task Boxes */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-          {visibleTasks.map((task) => (
+        <div className="flex flex-col gap-6 w-full">
+          {visibleActivities.map((activity, activityIndex) => (
             <div
-              key={task.id}
-              className="bg-gray-100 shadow-md rounded-md p-6 flex flex-col items-start"
+              key={activityIndex}
+              className="bg-gray-100 shadow-md rounded-md p-6 flex flex-col items-start w-full"
             >
-              <p className="text-lg font-semibold mb-4">{task.title}</p>
-              {task.fields && task.fields.length > 0 ? (
-                task.fields.map((field, index) => (
-                  <div key={index} className="flex items-center mb-2">
+              <p className="text-lg font-semibold mb-4">{activity.activity}</p>
+              {activity.tasks && activity.tasks.length > 0 ? (
+                activity.tasks.map((task, taskIndex) => (
+                  <div key={taskIndex} className="flex items-center mb-2">
                     <input
                       type="checkbox"
-                      checked={field.completed}
-                      onChange={() => toggleFieldCompletion(task.id, index)}
+                      checked={task.completed}
+                      onChange={() => toggleFieldCompletion(activityIndex, taskIndex)}
                       className="mr-3 w-5 h-5 rounded-full border-2 border-red-500 text-red-500 focus:ring-red-500"
                     />
                     <div>
                       <label className="block text-sm font-medium text-gray-700">
-                        {field.label}:
+                        {task.label || "Task"}:
                       </label>
-                      <p className="text-sm">{field.value}</p>
                     </div>
                   </div>
                 ))
               ) : (
-                <p className="text-sm text-gray-500">No subtasks available</p>
+                <p className="text-sm text-gray-500">No tasks available</p>
               )}
             </div>
           ))}
@@ -175,9 +188,9 @@ export default function Page() {
           </button>
           <button
             onClick={handleNextPage}
-            disabled={(currentPage + 1) * tasksPerPage >= tasks.length}
+            disabled={(currentPage + 1) * tasksPerPage >= activities.length}
             className={`px-4 py-2 rounded ${
-              (currentPage + 1) * tasksPerPage >= tasks.length
+              (currentPage + 1) * tasksPerPage >= activities.length
                 ? "bg-gray-300 cursor-not-allowed"
                 : "bg-blue-500 text-white hover:bg-blue-600"
             }`}
