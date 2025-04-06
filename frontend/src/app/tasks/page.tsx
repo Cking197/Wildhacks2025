@@ -39,9 +39,8 @@ export default function Page() {
           const activityData = data.activeHobbies.map((hobby: any) => ({
             activity: hobby.activity,
             tasks: hobby.tasks.map((task: any) => ({
-              label: task[0] || "Task",
-            //  value: task[1] || "No description provided",
-              completed: task[1] || false,
+              label: task["task"] || "Task",
+              completed: task["completed"] || false,
             })),
           }));
           setActivities(activityData);
@@ -63,13 +62,13 @@ export default function Page() {
       prevActivities.map((activity, aIndex) =>
         aIndex === globalActivityIndex
           ? {
-              ...activity,
-              tasks: activity.tasks.map((task, tIndex) =>
-                tIndex === taskIndex
-                  ? { ...task, completed: !task.completed }
-                  : task
-              ),
-            }
+            ...activity,
+            tasks: activity.tasks.map((task, tIndex) =>
+              tIndex === taskIndex
+                ? { ...task, completed: !task.completed }
+                : task
+            ),
+          }
           : activity
       )
     );
@@ -179,22 +178,20 @@ export default function Page() {
           <button
             onClick={handlePreviousPage}
             disabled={currentPage === 0}
-            className={`px-4 py-2 rounded ${
-              currentPage === 0
+            className={`px-4 py-2 rounded ${currentPage === 0
                 ? "bg-gray-300 cursor-not-allowed"
                 : "bg-blue-500 text-white hover:bg-blue-600"
-            }`}
+              }`}
           >
             Show Previous
           </button>
           <button
             onClick={handleNextPage}
             disabled={(currentPage + 1) * tasksPerPage >= activities.length}
-            className={`px-4 py-2 rounded ${
-              (currentPage + 1) * tasksPerPage >= activities.length
+            className={`px-4 py-2 rounded ${(currentPage + 1) * tasksPerPage >= activities.length
                 ? "bg-gray-300 cursor-not-allowed"
                 : "bg-blue-500 text-white hover:bg-blue-600"
-            }`}
+              }`}
           >
             Show More
           </button>
