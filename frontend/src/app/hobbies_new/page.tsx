@@ -46,8 +46,6 @@ export default function Page() {
         const data = await response.json();
 
         if (response.ok) {
-          const hobbyData = data.pastHobbies.map((hobby: any) => ({
-            activity: hobby.activity,
           const hobbyData = data.map((hobby: any) => ({
             title: hobby.activity,
             description: hobby.description,
@@ -67,7 +65,7 @@ export default function Page() {
     fetchData();
   }, []);
 
-  const handleCreateTask(key) {
+  const handleCreateTask = (key: number) => {
     const fetchData = async () => {
       try {
         const userIDFromURL = new URL(window.location.href).searchParams.get("userID");
@@ -85,15 +83,15 @@ export default function Page() {
               activity: hobbies[key].title,
               description: hobbies[key].description,
               time: hobbies[key].time,
-              budget: hobbies[key].title
-            }
+              budget: hobbies[key].cost, // Fixed the budget field to use the correct property
+            },
           }),
         });
 
         const data = await response.json();
 
         if (response.ok) {
-        
+          console.log("Task created successfully:", data);
         } else {
           setError(data.message || "Failed to create hobby.");
         }
@@ -104,7 +102,7 @@ export default function Page() {
     };
 
     fetchData();
-  }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 font-[family-name:var(--font-geist-sans)]">
@@ -159,26 +157,26 @@ export default function Page() {
             >
               <p className="text-lg font-semibold mb-2">{hobby.title}</p>
               <div className="mb-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 font-bold">
                   Description:
                 </label>
                 <p className="text-sm">{hobby.description}</p>
               </div>
               <div className="mb-2">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 font-bold">
                   Cost:
                 </label>
                 <p className="text-sm">{hobby.cost}</p>
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">
+                <label className="block text-sm font-medium text-gray-700 font-bold">
                   Time:
                 </label>
                 <p className="text-sm">{hobby.time}</p>
               </div>
               <a
                 className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-                onClick={handleCreateTask(key)}
+                onClick={() => handleCreateTask(index)} // Pass the index to the function
               >
                 Add
               </a>
