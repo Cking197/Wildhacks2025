@@ -39,7 +39,7 @@ export default function Home() {
 
         {/* copilot */}
         {/* Username Input Box */}
-        <div class="log-in-line-container">
+        <div className="log-in-line-container">
           <p className="text-sm text-gray-500 mt-2">ID: &nbsp;</p>
           <input
                     type="text"
