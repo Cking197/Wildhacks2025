@@ -4,29 +4,11 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function Page() {
-  const [hobbies, setHobbies] = useState([
-    {
-      title: "",
-      description: "",
-      cost: "",
-      time: "",
-    },
-    {
-      title: "",
-      description: "",
-      cost: "",
-      time: "",
-    },
-    {
-      title: "",
-      description: "",
-      cost: "",
-      time: "",
-    },
-  ]);
+  const [hobbies, setHobbies] = useState([]);
   const [error, setError] = useState("");
   const [userID, setUserID] = useState<string | null>(null); // State to store the userID
-const [addedHobbies, setAddedHobbies] = useState<boolean[]>([]); // State to track added hobbies
+  const [addedHobbies, setAddedHobbies] = useState<boolean[]>([]); // State to track added hobbies
+  const [loading, setLoading] = useState(true); // State to track loading
 
   useEffect(() => {
     const fetchData = async () => {
@@ -54,7 +36,7 @@ const [addedHobbies, setAddedHobbies] = useState<boolean[]>([]); // State to tra
             time: hobby.time,
           }));
           setHobbies(hobbyData);
-setAddedHobbies(new Array(hobbyData.length).fill(false)); // Initialize addedHobbies state
+          setAddedHobbies(new Array(hobbyData.length).fill(false)); // Initialize addedHobbies state
         } else {
           setError(data.message || "Failed to load hobbies.");
         }

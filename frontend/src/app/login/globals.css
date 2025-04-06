@@ -32,3 +32,7 @@ body {
   gap: 0.5rem; /* Adds spacing between the text and button */
   margin-bottom: 1rem; /* Adds spacing below the container */
 }
+
+nextjs-portal {
+  display: none;
+}

@@ -168,8 +168,8 @@ export default function Hobbies() {
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
             href={`/tasks?userID=${userID}`}
-            target="_blank"
-            rel="noopener noreferrer"
+            //target="_blank"
+            //rel="noopener noreferrer"
           >
             Tasks
           </a>
@@ -177,8 +177,8 @@ export default function Hobbies() {
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
             href={`/hobbies_new?userID=${userID}`}
-            target="_blank"
-            rel="noopener noreferrer"
+            //target="_blank"
+            //rel="noopener noreferrer"
           >
             New Hobbies
           </a>
@@ -186,8 +186,8 @@ export default function Hobbies() {
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
             href={`/profile?userID=${userID}`}
-            target="_blank"
-            rel="noopener noreferrer"
+            //target="_blank"
+            //rel="noopener noreferrer"
           >
             Profile
           </a>
@@ -195,7 +195,7 @@ export default function Hobbies() {
 
         {/* Subheading */}
         <p className="text-center text-lg font-[family-name:var(--font-geist-mono)] font-medium mb-6">
-          Add all current and previous hobbies you have had below
+          Add all current and previous hobbies you have had below.
         </p>
 
         <form onSubmit={handleSubmit}>
