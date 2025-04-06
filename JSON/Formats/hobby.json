@@ -1,0 +1,10 @@
+{
+    "activity": "String", //list of tasks associated with pursuit of hobby. empty if past hobby
+    "experience":"String", //low, medium or high
+    "cost": {
+        "$numberInt": "int" //in usd
+    },
+    "time": "String",  //in hrs
+    "active":false,
+    "tasks": []
+}

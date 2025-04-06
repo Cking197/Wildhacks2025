@@ -1,4 +1,0 @@
-{
-    "name": "String", // name of the task
-    "complete": "Bool", //is task done
-}
