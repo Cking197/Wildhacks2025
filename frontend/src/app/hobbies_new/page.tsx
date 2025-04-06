@@ -4,7 +4,7 @@ import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function Page() {
-  const [hobbies,setHobbies] = useState([
+  const [hobbies, setHobbies] = useState([
     {
       title: "",
       description: "",
@@ -25,44 +25,45 @@ export default function Page() {
     },
   ]);
   const [error, setError] = useState("");
+  const [userID, setUserID] = useState<string | null>(null); // State to store the userID
 
-    useEffect(() => {
-      const fetchData = async () => {
-        try {
-          const userID = new URL(window.location.href).searchParams.get("userID");
-  
-          const response = await fetch("http://127.0.0.1:5000/createHobbies", {
-            method: "POST", // or GET with query params if supported
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-              _id: { $oid: userID },
-            }),
-          });
-  
-          const data = await response.json();
-  
-          if (response.ok) {
-            // Example: backend returns hobbies like [{ activity: "Tennis", experience: "Intermediate" }, ...]
-            const hobbyData = data.pastHobbies.map((hobby: any) => ({
-              activity: hobby.activity,
-              description: hobby.description,
-              cost: hobby.budget, // or true if you want them to be editable initially
-              time:hobby.time
-            }));
-            setHobbies(hobbyData);
-          } else {
-            setError(data.message || "Failed to load hobbies.");
-          }
-        } catch (err) {
-          console.error(err);
-          setError("Something went wrong while fetching data.");
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userIDFromURL = new URL(window.location.href).searchParams.get("userID");
+        setUserID(userIDFromURL); // Save userID for use in URLs
+
+        const response = await fetch("http://127.0.0.1:5000/createHobbies", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _id: { $oid: userIDFromURL },
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          const hobbyData = data.pastHobbies.map((hobby: any) => ({
+            activity: hobby.activity,
+            description: hobby.description,
+            cost: hobby.budget,
+            time: hobby.time,
+          }));
+          setHobbies(hobbyData);
+        } else {
+          setError(data.message || "Failed to load hobbies.");
         }
-      };
-  
-      fetchData();
-    }, []);
+      } catch (err) {
+        console.error(err);
+        setError("Something went wrong while fetching data.");
+      }
+    };
+
+    fetchData();
+  }, []);
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 font-[family-name:var(--font-geist-sans)]">
@@ -76,14 +77,14 @@ export default function Page() {
         <div className="flex justify-center gap-4 items-center flex-wrap mb-6">
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href="/hobbies"
+            href={`/hobbies?userID=${userID}`}
           >
             Hobbies
           </a>
 
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href="/tasks"
+            href={`/tasks?userID=${userID}`}
           >
             Tasks
           </a>
@@ -97,7 +98,7 @@ export default function Page() {
 
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href="/signup"
+            href={`/signup?userID=${userID}`}
           >
             Profile
           </a>
@@ -147,14 +148,14 @@ export default function Page() {
         <div className="flex justify-center gap-4 items-center flex-wrap mt-6">
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href="/tasks"
+            href={`/tasks?userID=${userID}`}
             style={{ backgroundColor: "#db4d3a", color: "white" }}
           >
             See Tasks
           </a>
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href="/hobbies_new"
+            href={`/hobbies_new?userID=${userID}`}
           >
             Refresh All
           </a>
@@ -165,7 +166,7 @@ export default function Page() {
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center mt-8">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="/about_us"
+          href={`/about_us?userID=${userID}`}
         >
           <Image
             aria-hidden
