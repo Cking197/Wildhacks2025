@@ -6,6 +6,7 @@ from pymongo.mongo_client import MongoClient
 from pymongo.server_api import ServerApi
 from dotenv import load_dotenv
 from google import genai
+from pydantic import BaseModel
 import os
 
 
@@ -18,6 +19,19 @@ uri = os.getenv("MONGODB_URI")
 # Create a new client and connect to the server
 mongoClient = MongoClient(uri, server_api=ServerApi('1'))
 geminiClient = genai.Client(api_key=os.getenv("GEMINI_API_KEY"))
+
+
+#Hobby Proposal
+class HobbyProposal(BaseModel):
+    activity: str
+    description: str
+    time: str
+    budget: str
+
+#Hobby Proposal
+class HobbyTasks(BaseModel):
+    task: list
+
 
 # Send a ping to confirm a successful connection
 try:
@@ -98,11 +112,16 @@ def create_Hobbies():
         
         prompt = f"""As someone who has previously spent time {hobbies}, please give me a JSON formatted list of 3 related or similar hobbies that work for
             someone who is {data["age"]} years old, lives in a {data["location"]} area, is willing to spend ${data["budget"]}, and is willing
-            to invest {data["availability"]} hours per week on these hobbies.
+            to invest {data["availability"]} hours per week on these hobbies. Please include only an "activity," "description," "time," and "budget" field.
         """
 
-        response = geminiClient.models.generate_content(model="gemini-2.0-flash", contents=prompt)
-        print(response.text)
+        response = geminiClient.models.generate_content(
+            model="gemini-2.0-flash", 
+            contents=prompt, 
+            config={
+                'response_mime_type': 'application/json',
+                'response_schema': list[HobbyProposal],
+            },)
         return jsonify(response.text)
     except:
         print("Error:", e)
@@ -116,10 +135,16 @@ def create_Tasks():
         
         prompt = f"""I'm really interested in {hobby["activity"]}, but have no idea where to start. Please create a JSON formatted list of at least
             2 tasks to help me figure out where or how to start given my time constraint of {hobby["time"]} weekly hours and cost constraint of 
-            ${hobby["cost"]}.
+            ${hobby["cost"]}. Please include only an "tasks" field.
         """
 
-        response = geminiClient.models.generate_content(model="gemini-2.0-flash", contents=prompt)
+        response = geminiClient.models.generate_content(
+            model="gemini-2.0-flash", 
+            contents=prompt, 
+            config={
+                'response_mime_type': 'application/json',
+                'response_schema': list[HobbyTasks],
+            },)
         print(response.text)
         return jsonify(response.txt)
     except:
