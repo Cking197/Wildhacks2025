@@ -7,12 +7,16 @@ export default function Page() {
   const [tasks, setTasks] = useState([]); // State to store tasks fetched from the backend
   const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState(""); // State to handle errors
+  const [userID, setUserID] = useState<string | null>(null); // State to store the userID
   const tasksPerPage = 3;
 
   // Fetch tasks from the backend
   useEffect(() => {
     const fetchTasks = async () => {
       try {
+        const userIDFromURL = new URL(window.location.href).searchParams.get("userID");
+        setUserID(userIDFromURL); // Save userID for use in URLs
+
         const response = await fetch("http://127.0.0.1:5000/tasks"); // Replace with your backend endpoint
         if (!response.ok) {
           throw new Error("Failed to fetch tasks");
@@ -85,7 +89,7 @@ export default function Page() {
         <div className="flex justify-center gap-4 items-center flex-wrap mb-6">
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href="/hobbies"
+            href={`/hobbies?userID=${userID}`}
           >
             Hobbies
           </a>
@@ -99,14 +103,14 @@ export default function Page() {
 
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href="/hobbies_new"
+            href={`/hobbies_new?userID=${userID}`}
           >
             New Hobbies
           </a>
 
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href="/signup"
+            href={`/signup?userID=${userID}`}
           >
             Profile
           </a>
@@ -180,7 +184,7 @@ export default function Page() {
       <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center mt-8">
         <a
           className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="/about_us"
+          href={`/about_us?userID=${userID}`}
         >
           <Image
             aria-hidden
