@@ -58,9 +58,10 @@ export default function Page() {
   }, []);
 
   const toggleFieldCompletion = (activityIndex: number, taskIndex: number) => {
+    const globalActivityIndex = currentPage * tasksPerPage + activityIndex; // Adjust for the current page offset
     setActivities((prevActivities) =>
       prevActivities.map((activity, aIndex) =>
-        aIndex === activityIndex
+        aIndex === globalActivityIndex
           ? {
               ...activity,
               tasks: activity.tasks.map((task, tIndex) =>
