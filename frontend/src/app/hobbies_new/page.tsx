@@ -1,163 +1,223 @@
 "use client";
 
+import React, { useState, useEffect } from "react";
 import Image from "next/image";
 
 export default function Page() {
-  
+  const [hobbies, setHobbies] = useState([
+    {
+      title: "",
+      description: "",
+      cost: "",
+      time: "",
+    },
+    {
+      title: "",
+      description: "",
+      cost: "",
+      time: "",
+    },
+    {
+      title: "",
+      description: "",
+      cost: "",
+      time: "",
+    },
+  ]);
+  const [error, setError] = useState("");
+  const [userID, setUserID] = useState<string | null>(null); // State to store the userID
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userIDFromURL = new URL(window.location.href).searchParams.get("userID");
+        setUserID(userIDFromURL); // Save userID for use in URLs
+
+        const response = await fetch("http://127.0.0.1:5000/createHobbies", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _id: { $oid: userIDFromURL },
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          const hobbyData = data.map((hobby: any) => ({
+            title: hobby.activity,
+            description: hobby.description,
+            cost: hobby.budget,
+            time: hobby.time,
+          }));
+          setHobbies(hobbyData);
+        } else {
+          setError(data.message || "Failed to load hobbies.");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Something went wrong while fetching data.");
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const handleCreateTask = (key: number) => {
+    const fetchData = async () => {
+      try {
+        const userIDFromURL = new URL(window.location.href).searchParams.get("userID");
+        setUserID(userIDFromURL); // Save userID for use in URLs
+
+        const response = await fetch("http://127.0.0.1:5000/createTasks", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _id: { $oid: userIDFromURL },
+
+            hobby: {
+              activity: hobbies[key].title,
+              description: hobbies[key].description,
+              time: hobbies[key].time,
+              budget: hobbies[key].cost, // Fixed the budget field to use the correct property
+            },
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log("Task created successfully:", data);
+        } else {
+          setError(data.message || "Failed to create hobby.");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Something went wrong while fetching data.");
+      }
+    };
+
+    fetchData();
+  };
+
   return (
-    <div className="flex items-center justify-center min-h-screen p-8 pb-20 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      {/* White Box Container */}
-      <div className="bg-white shadow-lg rounded-lg p-8 sm:p-12 w-full min-h-full max-w-5xl">
-        <main className="flex flex-col gap-[32px] row-start-2 items-center">
-  
-          <div className="flex gap-4 items-center flex-col sm:flex-row">
-            <a
-              className="rounded-lg border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base px-6 py-3"
-              href="http://localhost:3000/hobbies"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Hobbies
-            </a>
+    <div className="flex flex-col items-center justify-center min-h-screen bg-gray-100 font-[family-name:var(--font-geist-sans)]">
+      {/* Main Content */}
+      <div className="bg-white p-8 rounded shadow-md w-full max-w-3xl">
+        <h1 className="text-2xl font-[family-name:var(--font-geist-mono)] font-bold mb-6 text-center">
+          Discover New Hobbies
+        </h1>
 
-            <a
-              className="rounded-lg border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base px-6 py-3"
-              href="http://localhost:3000/tasks"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Tasks
-            </a>
-
-            <a
-              className="rounded-lg border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base px-6 py-3 opacity-50 hover:opacity-100"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              New Hobbies
-            </a>
-
-            <a
-              className="rounded-lg border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base px-6 py-3"
-              href="http://localhost:3000/signup"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Profile
-            </a>
-            
-          </div>
-          
-          <p>
-          Add hobbies you would like to start to Tasks. Refresh all to see three new hobbies.
-          </p>
-
-          {/* Three White Box Containers */}
-          <div className="flex flex-row gap-6">
-            <div className="bg-gray-100 shadow-md rounded-md p-6 flex-1">
-              <h3 className="text-lg font-semibold">Activity 1</h3>
-              <p>Time: {}</p>
-              <p>Description:</p>
-              {/* Text box for description from Gemini API */}
-              {/* <textarea
-                value={dataFromBackend} // Replace with the actual state holding backend data
-                readOnly
-                className="w-full border border-gray-300 rounded p-4 text-sm resize-none overflow-auto mt-2"
-                style={{ height: "auto" }}
-                rows={Math.max(3, dataFromBackend.split("\n").length)} // Dynamically adjust rows based on content
-              /> */}
-              <a
-              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto mt-4"
-              href="http://localhost:3000/tasks"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Add
-            </a>
-            </div>
-
-
-            <div className="bg-gray-100 shadow-md rounded-md p-6 flex-1">
-              <h3 className="text-lg font-semibold">Hobby 2</h3>
-              <p>Time: {}</p>
-              <p>Description:</p>
-              {/* Text box for description from Gemini API */}
-              {/* <textarea
-                value={dataFromBackend} // Replace with the actual state holding backend data
-                readOnly
-                className="w-full border border-gray-300 rounded p-4 text-sm resize-none overflow-auto mt-2"
-                style={{ height: "auto" }}
-                rows={Math.max(3, dataFromBackend.split("\n").length)} // Dynamically adjust rows based on content
-              /> */}
-            <a
-              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto mt-4"
-              href="http://localhost:3000/tasks"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Add
-            </a>
-            </div>
-
-
-            <div className="bg-gray-100 shadow-md rounded-md p-6 flex-1">
-              <h3 className="text-lg font-semibold">Hobby 3</h3>
-              <p>Time: {}</p>
-              <p>Description:</p>
-              {/* Text box for description from Gemini API */}
-              {/* <textarea
-                value={dataFromBackend} // Replace with the actual state holding backend data
-                readOnly
-                className="w-full border border-gray-300 rounded p-4 text-sm resize-none overflow-auto mt-2"
-                style={{ height: "auto" }}
-                rows={Math.max(3, dataFromBackend.split("\n").length)} // Dynamically adjust rows based on content
-              /> */}
-            <a
-              className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto mt-4"
-              href="http://localhost:3000/hobby3_tasks"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              Add
-            </a>
-            </div>
-          </div>
-
-          <div className="flex gap-4 items-center flex-col sm:flex-row">
-                    <a
-                      className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-                      href="/tasks"
-                      style={{ backgroundColor: "#db4d3a" }}
-                    >
-                      See tasks
-                    </a>
-                    <a
-                      className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-                      href="/hobbies_new"
-                    >
-                      Refresh all
-                    </a>
-                  </div>
-
-        </main>
-        <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center mt-8">
-        <a
-            className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-            href="http://localhost:3000/about_us"
-            target="_blank"
-            rel="noopener noreferrer"
+        {/* Buttons Section */}
+        <div className="flex justify-center gap-4 items-center flex-wrap mb-6">
+          <a
+            className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+            href={`/hobbies?userID=${userID}`}
           >
-            <Image
-              aria-hidden
-              src="/file.svg"
-              alt="File icon"
-              width={16}
-              height={16}
-            />
-            About Us
+            Hobbies
           </a>
-        </footer>
+
+          <a
+            className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+            href={`/tasks?userID=${userID}`}
+          >
+            Tasks
+          </a>
+
+          <button
+            className="rounded-full border border-black px-4 py-2 text-black bg-gray-300 cursor-not-allowed"
+            disabled
+          >
+            New Hobbies
+          </button>
+
+          <a
+            className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+            href={`/signup?userID=${userID}`}
+          >
+            Profile
+          </a>
+        </div>
+
+        {/* Subheading */}
+        <p className="text-center text-lg font-[family-name:var(--font-geist-mono)] font-medium mb-6">
+          Add hobbies you would like to start to Tasks. Refresh to see three new hobbies.
+        </p>
+
+        {/* Hobby Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {hobbies.map((hobby, index) => (
+            <div
+              key={index}
+              className="bg-gray-100 shadow-md rounded-md p-6 flex flex-col items-start"
+            >
+              <p className="text-lg font-semibold mb-2">{hobby.title}</p>
+              <div className="mb-2">
+                <label className="block text-sm font-medium text-gray-700 font-bold">
+                  Description:
+                </label>
+                <p className="text-sm">{hobby.description}</p>
+              </div>
+              <div className="mb-2">
+                <label className="block text-sm font-medium text-gray-700 font-bold">
+                  Cost:
+                </label>
+                <p className="text-sm">{hobby.cost}</p>
+              </div>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700 font-bold">
+                  Time:
+                </label>
+                <p className="text-sm">{hobby.time}</p>
+              </div>
+              <a
+                className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+                onClick={() => handleCreateTask(index)} // Pass the index to the function
+              >
+                Add
+              </a>
+            </div>
+          ))}
+        </div>
+
+        {/* Footer Buttons */}
+        <div className="flex justify-center gap-4 items-center flex-wrap mt-6">
+          <a
+            className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+            href={`/tasks?userID=${userID}`}
+            style={{ backgroundColor: "#db4d3a", color: "white" }}
+          >
+            See Tasks
+          </a>
+          <a
+            className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
+            href={`/hobbies_new?userID=${userID}`}
+          >
+            Refresh All
+          </a>
+        </div>
       </div>
-      </div>
+
+      {/* Footer */}
+      <footer className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center mt-8">
+        <a
+          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
+          href={`/about_us?userID=${userID}`}
+        >
+          <Image
+            aria-hidden
+            src="/file.svg"
+            alt="File icon"
+            width={16}
+            height={16}
+          />
+          About Us
+        </a>
+      </footer>
+    </div>
   );
 }

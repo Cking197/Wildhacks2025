@@ -9,19 +9,21 @@ export default function Hobbies() {
     { activity: string; experience: string; editable: boolean }[]
   >([]);
   const [error, setError] = useState("");
+  const [userID, setUserID] = useState<string | null>(null); // State to store the userID
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const userID = new URL(window.location.href).searchParams.get("userID");
+        const userIDFromURL = new URL(window.location.href).searchParams.get("userID");
+        setUserID(userIDFromURL); // Save userID for use in URLs
 
         const response = await fetch("http://127.0.0.1:5000/getUser", {
-          method: "POST", // or GET with query params if supported
+          method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            _id: { $oid: userID },
+            _id: { $oid: userIDFromURL },
           }),
         });
 
@@ -29,11 +31,10 @@ export default function Hobbies() {
         console.log(data)
 
         if (response.ok) {
-          // Example: backend returns hobbies like [{ activity: "Tennis", experience: "Intermediate" }, ...]
           const hobbyData = data.pastHobbies.map((hobby: any) => ({
             activity: hobby.activity,
             experience: hobby.experience,
-            editable: false, // or true if you want them to be editable initially
+            editable: false,
           }));
           setRows(hobbyData);
         } else {
@@ -121,7 +122,6 @@ export default function Hobbies() {
   };
 
   const addRow = () => {
-    // Set all existing rows to non-editable
     const updatedRows = rows.map((row) => ({ ...row, editable: false }));
     updateRows([...updatedRows, { activity: "", experience: "Beginner", editable: true }]);
   };
@@ -140,12 +140,11 @@ export default function Hobbies() {
 
   const handleFindNewHobbies = () => {
     if (!isButtonDisabled) {
-      // Lock all rows by setting editable to false
       const updatedRows = rows.map((row) => ({ ...row, editable: false }));
       updateRows(updatedRows);
 
-      // Navigate to the hobbies_new page
-      router.push("/hobbies_new");
+      // Navigate to the hobbies_new page with userID
+      router.push(`/hobbies_new?userID=${userID}`);
     }
   };
 
@@ -168,7 +167,7 @@ export default function Hobbies() {
 
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href="http://localhost:3000/tasks"
+            href={`/tasks?userID=${userID}`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -177,7 +176,7 @@ export default function Hobbies() {
 
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href="http://localhost:3000/hobbies_new"
+            href={`/hobbies_new?userID=${userID}`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -186,7 +185,7 @@ export default function Hobbies() {
 
           <a
             className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
-            href="http://localhost:3000/profile"
+            href={`/profile?userID=${userID}`}
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -226,7 +225,7 @@ export default function Hobbies() {
                       }
                       className="w-full border border-gray-300 rounded px-2 py-1"
                       placeholder="Enter activity"
-                      disabled={!row.editable} // Disable input if not editable
+                      disabled={!row.editable}
                     />
                   </td>
                   <td className="border border-gray-300 px-4 py-2">
@@ -236,7 +235,7 @@ export default function Hobbies() {
                         handleChange(index, "experience", e.target.value)
                       }
                       className="w-full border border-gray-300 rounded px-2 py-1"
-                      disabled={!row.editable} // Disable select if not editable
+                      disabled={!row.editable}
                     >
                       <option value="Beginner">Beginner</option>
                       <option value="Intermediate">Intermediate</option>
