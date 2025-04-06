@@ -48,9 +48,9 @@ export default function Page() {
             
           </div>
           
-          <p>Here are some hobbies you could try. 
-            Select the hobbies you are interested in starting. 
-            </p>
+          <p>
+          Add hobbies you would like to start to Tasks. Refresh all to see three new hobbies.
+          </p>
 
           {/* Three White Box Containers */}
           <div className="flex flex-row gap-6">
@@ -72,7 +72,7 @@ export default function Page() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Create tasks
+              Add
             </a>
             </div>
 
@@ -95,7 +95,7 @@ export default function Page() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Create tasks
+              Add
             </a>
             </div>
 
@@ -118,7 +118,7 @@ export default function Page() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              Create tasks
+              Add
             </a>
             </div>
           </div>
@@ -127,14 +127,15 @@ export default function Page() {
                     <a
                       className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
                       href="/signup"
+                      style={{ backgroundColor: "#db4d3a" }}
                     >
-                      Get started
+                      See tasks
                     </a>
                     <a
                       className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
                       href="/signup"
                     >
-                      Refresh all hobbies
+                      Refresh all
                     </a>
                   </div>
 
