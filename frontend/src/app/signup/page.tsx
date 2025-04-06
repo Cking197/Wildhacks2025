@@ -15,6 +15,8 @@ export default function Page() {
   });
 
   const [error, setError] = useState("");
+  const [showPopup, setShowPopup] = useState(true); // State to manage popup visibility
+  let userID = "12345"; // Example user ID (replace with actual logic if needed)
 
   useEffect(() => {
     console.log("Signup Page Mounted");
@@ -60,18 +62,18 @@ export default function Page() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          name: formData.name, 
-          pastHobbies: [], 
+          name: formData.name,
+          pastHobbies: [],
           activeHobbies: [],
           location: formData.location,
           availability: formData.availability,
           age: formData.age,
-          budget: formData.budget
+          budget: formData.budget,
         }),
       });
-  
+
       const data = await response.json();
-  
+
       if (response.ok) {
         console.log("User created:", data);
         // Navigate to the next page
@@ -79,6 +81,9 @@ export default function Page() {
       } else {
         setError(data.message || "Failed to create user.");
       }
+
+      userID = data["_id"]; // Assuming the response contains the user ID
+
     } catch (err) {
       console.error("Error submitting form:", err);
       setError("An error occurred while submitting the form.");
@@ -87,16 +92,42 @@ export default function Page() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100 font-[family-name:var(--font-geist-sans)]">
+      {/* Popup */}
+      {showPopup && (
+        <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-6 rounded shadow-lg max-w-sm w-full relative">
+            <button
+              onClick={() => setShowPopup(false)}
+              className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+            >
+              X
+            </button>
+            <h2 className="text-lg font-bold mb-4">Welcome!</h2>
+            <p className="text-sm">Your User ID is:</p>
+            <p className="text-lg font-semibold">{userID}</p>
+          </div>
+        </div>
+      )}
+
       <div className="bg-white p-8 rounded shadow-md w-full max-w-md">
-        <h1 className="text-2xl font-[family-name:var(--font-geist-mono)] font-bold mb-6 text-center">Create New Profile</h1>
+        <h1 className="text-2xl font-[family-name:var(--font-geist-mono)] font-bold mb-6 text-center">
+          Create New Profile
+        </h1>
         <form onSubmit={handleSubmit} className="">
           {error && <p className="text-red-500 text-sm">{error}</p>}
 
           {/* Subheading for Personal Information */}
           <div>
-            <h2 className="text-md font-[family-name:var(--font-geist-mono)] font-semibold mt-6">Personal Information</h2>
+            <h2 className="text-md font-[family-name:var(--font-geist-mono)] font-semibold mt-6">
+              Personal Information
+            </h2>
             <div className="mb-4">
-              <label htmlFor="name" className="block text-sm font-[family-name:var(--font-geist-mono)] font-medium mb-1">Name:</label>
+              <label
+                htmlFor="name"
+                className="block text-sm font-[family-name:var(--font-geist-mono)] font-medium mb-1"
+              >
+                Name:
+              </label>
               <input
                 type="text"
                 id="name"
@@ -108,7 +139,12 @@ export default function Page() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="email" className="block text-sm font-[family-name:var(--font-geist-mono)] font-medium mb-1">Email:</label>
+              <label
+                htmlFor="email"
+                className="block text-sm font-[family-name:var(--font-geist-mono)] font-medium mb-1"
+              >
+                Email:
+              </label>
               <input
                 type="email"
                 id="email"
@@ -120,7 +156,12 @@ export default function Page() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="age" className="block text-sm font-[family-name:var(--font-geist-mono)] font-medium mb-1">Age:</label>
+              <label
+                htmlFor="age"
+                className="block text-sm font-[family-name:var(--font-geist-mono)] font-medium mb-1"
+              >
+                Age:
+              </label>
               <input
                 type="number"
                 id="age"
@@ -132,7 +173,12 @@ export default function Page() {
               />
             </div>
             <div className="mb-4">
-              <label htmlFor="location" className="block text-sm font-[family-name:var(--font-geist-mono)] font-medium mb-1">Location:</label>
+              <label
+                htmlFor="location"
+                className="block text-sm font-[family-name:var(--font-geist-mono)] font-medium mb-1"
+              >
+                Location:
+              </label>
               <select
                 id="location"
                 name="location"
@@ -151,9 +197,16 @@ export default function Page() {
 
           <div>
             {/* Subheading for Hobby Information */}
-            <h2 className="text-md font-[family-name:var(--font-geist-mono)] font-semibold mt-6">Hobby Information</h2>
+            <h2 className="text-md font-[family-name:var(--font-geist-mono)] font-semibold mt-6">
+              Hobby Information
+            </h2>
             <div className="mb-4">
-              <label htmlFor="availability" className="block text-sm font-[family-name:var(--font-geist-mono)] font-medium mb-1">Availability (hours per week):</label>
+              <label
+                htmlFor="availability"
+                className="block text-sm font-[family-name:var(--font-geist-mono)] font-medium mb-1"
+              >
+                Availability (hours per week):
+              </label>
               <select
                 id="availability"
                 name="availability"
@@ -169,7 +222,12 @@ export default function Page() {
               </select>
             </div>
             <div className="mb-4">
-              <label htmlFor="budget" className="block font-[family-name:var(--font-geist-mono)] text-sm font-medium mb-1">Budget (USD per month):</label>
+              <label
+                htmlFor="budget"
+                className="block font-[family-name:var(--font-geist-mono)] text-sm font-medium mb-1"
+              >
+                Budget (USD per month):
+              </label>
               <input
                 type="number"
                 id="budget"
