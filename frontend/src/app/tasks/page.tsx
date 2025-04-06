@@ -209,7 +209,7 @@ export default function Page() {
                     />
                     <div>
                       <label className="block text-sm font-medium text-gray-700">
-                        {task.label || "Task"}:
+                        {task.label || "Task"}
                       </label>
                     </div>
                   </div>
