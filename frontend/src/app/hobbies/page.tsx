@@ -4,16 +4,48 @@ import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 export default function Hobbies() {
-  const router = useRouter(); // Initialize the router
+  const router = useRouter();
   const [rows, setRows] = useState<
     { activity: string; experience: string; editable: boolean }[]
-  >([
-    { activity: "", experience: "Beginner", editable: true },
-  ]);
+  >([]);
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    console.log("Hobbies Page Mounted");
-  }, []); // Empty dependency array ensures this runs only once when the component mounts
+    const fetchData = async () => {
+      try {
+        const userID = new URL(window.location.href).searchParams.get("userID");
+
+        const response = await fetch("http://127.0.0.1:5000/getUser", {
+          method: "POST", // or GET with query params if supported
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            _id: { $oid: userID },
+          }),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          // Example: backend returns hobbies like [{ activity: "Tennis", experience: "Intermediate" }, ...]
+          const hobbyData = data.pastHobbies.map((hobby: any) => ({
+            activity: hobby.activity,
+            experience: hobby.experience,
+            editable: false, // or true if you want them to be editable initially
+          }));
+          setRows(hobbyData);
+        } else {
+          setError(data.message || "Failed to load hobbies.");
+        }
+      } catch (err) {
+        console.error(err);
+        setError("Something went wrong while fetching data.");
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const handleChange = (
     index: number,
