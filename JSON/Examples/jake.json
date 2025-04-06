@@ -1,0 +1,13 @@
+{
+    "name": "Dave",
+    "pastHobbies": [],
+    "activeHobbies": [],
+    "location": "urban",
+    "availability": "low",
+    "budget": {
+        "$numberInt": "54"
+    },
+    "age": {
+        "$numberInt": "35"
+    }
+}
