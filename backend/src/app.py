@@ -134,8 +134,8 @@ def create_Tasks():
         data = request.get_json()
         hobbyProposal = data["hobby"]
         
-        prompt = f"""I'm really interested in {hobbyProposal["activity"]}, with the following description: {hobbyProposal["description"]}but have no idea where to start. Please create a JSON formatted list of at least
-            2 tasks to help me figure out where or how to start. Please include only a "tasks" field.
+        prompt = f"""I'm really interested in {hobbyProposal["activity"]}, with the following description: {hobbyProposal["description"]}, but have no idea where to start. Please create a JSON formatted list of at least
+            3 tasks to help me figure out where or how to start. Please include only a "tasks" field.
         """
 
         response = geminiClient.models.generate_content(
