@@ -15,13 +15,13 @@ export default function Home() {
   return (
     <div className="flex items-center justify-center min-h-screen p-8 pb-20 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       {/* White Box Container */}
-      <div className="bg-white shadow-lg rounded-lg p-8 sm:p-12 w-full h-[90vh] max-w-5xl">
+      <div className="bg-white shadow-lg rounded-lg p-8 sm:p-12 w-full min-h-full max-w-5xl">
         <main className="flex flex-col gap-[32px] row-start-2 items-center">
         <Image
           src="/logo.jpg"
           alt="Hobbify logo"
-          width={360/2}
-          height={76/2}
+          width={360}
+          height={76}
           priority
           className="mt-[-150px]" // Moves the logo up by 150px
         />
@@ -50,7 +50,7 @@ export default function Home() {
                   />
           <a
               className="rounded-full border border-solid border-black/[.08] dark:border-grey/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent hover:text-white font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto"
-              href="http://localhost:3000/profile"
+              href="http://localhost:3000/tasks"
               target="_blank"
               rel="noopener noreferrer"
             >
