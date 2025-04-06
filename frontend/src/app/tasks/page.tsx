@@ -5,6 +5,9 @@ import Image from "next/image";
 
 export default function Page() {
   const [tasks, setTasks] = useState([]); // State to store tasks fetched from the backend
+  const [activities, setActivities] = useState<
+      { activity: string; task: [string] }[]
+    >([]);
   const [currentPage, setCurrentPage] = useState(0);
   const [error, setError] = useState(""); // State to handle errors
   const [userID, setUserID] = useState<string | null>(null); // State to store the userID
@@ -17,13 +20,17 @@ export default function Page() {
         const userIDFromURL = new URL(window.location.href).searchParams.get("userID");
         setUserID(userIDFromURL); // Save userID for use in URLs
 
-        const response = await fetch("http://127.0.0.1:5000/tasks"); // Replace with your backend endpoint
+        const response = await fetch("http://127.0.0.1:5000/getUser"); // Replace with your backend endpoint
         if (!response.ok) {
           throw new Error("Failed to fetch tasks");
         }
         const data = await response.json();
-        if (data.tasks && Array.isArray(data.tasks)) {
-          setTasks(data.tasks); // Assuming the backend returns an object with a `tasks` array
+        if (data.activeHobbies && Array.isArray(data.activeHobbies.tasks)) {
+          const activityData  = data.activeHobbies.map((hobby: any) => ({
+            activity: hobby.activity,
+            tasks: hobby.tasks
+          }));
+          setActivities(activityData)
         } else {
           throw new Error("Invalid tasks data format");
         }
