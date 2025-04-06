@@ -15,13 +15,13 @@ export default function Home() {
   return (
     <div className="flex items-center justify-center min-h-screen p-8 pb-20 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       {/* White Box Container */}
-      <div className="bg-white shadow-lg rounded-lg p-8 sm:p-12 w-full h-[90vh] max-w-5xl">
+      <div className="bg-white shadow-lg rounded-lg p-8 sm:p-12 w-full min-h-full max-w-5xl">
         <main className="flex flex-col gap-[32px] row-start-2 items-center">
         <Image
           src="/logo.jpg"
           alt="Hobbify logo"
-          width={360/2}
-          height={76/2}
+          width={360}
+          height={76}
           priority
           className="mt-[-150px]" // Moves the logo up by 150px
         />
