@@ -1,7 +1,38 @@
+'use client';
+
 import Image from "next/image";
 import { useState, useEffect } from "react";
 
 export default function Page() {
+
+  const [tasks, setTasks] = useState([]);
+
+  useEffect(() => {
+    // Simulate fetching data from the backend
+    const fetchData = async () => {
+      try {
+        const response = await fetch("http://localhost:3000/api/tasks"); // Replace with your API endpoint
+        if (response.ok) {
+          const result = await response.json();
+          setTasks(result);
+        } else {
+          console.error("Failed to fetch tasks");
+        }
+      } catch (error) {
+        console.error("Error fetching tasks:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const toggleTask = (id) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task.id === id ? { ...task, completed: !task.completed } : task
+      )
+    );
+  };
   
   return (
     <div className="flex items-center justify-center min-h-screen p-8 pb-20 sm:p-20 font-[family-name:var(--font-geist-sans)]">
@@ -21,7 +52,6 @@ export default function Page() {
 
             <a
               className="rounded-lg border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base px-6 py-3"
-              href="http://localhost:3000/tasks"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -30,6 +60,7 @@ export default function Page() {
 
             <a
               className="rounded-lg border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base px-6 py-3 opacity-50 hover:opacity-100"
+              href="http://localhost:3000/hobbies_new"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -56,30 +87,34 @@ export default function Page() {
             <div className="bg-gray-100 shadow-md rounded-md p-6 flex-1">
               <h3 className="text-lg font-semibold">Activity 1</h3>
 
-              <div className="flex flex-col gap-4">
-                {tasks.map((task) => (
-                  <div
-                    key={task.id}
-                    className="flex items-center justify-between bg-gray-100 shadow-md rounded-md p-4"
-                  >
-                    <label
-                      className={`flex items-center gap-2 ${
-                        task.completed ? "text-gray-400 line-through" : "text-black"
-                      }`}
+              <div className="checklist flex flex-col gap-4 mt-4">
+                {tasks && tasks.length > 0 ? (
+                  tasks.map((task) => (
+                    <div
+                      key={task.id}
+                      className="flex flex-col bg-gray-50 shadow-sm rounded-md p-4"
                     >
-                      <input
-                        type="checkbox"
-                        checked={task.completed}
-                        onChange={() => toggleTask(task.id)}
-                        className="w-4 h-4"
-                      />
-                      {task.text}
-                    </label>
-                    <p className="text-sm text-gray-500">
-                      Deadline: {new Date(task.deadline).toLocaleString()}
-                    </p>
-                  </div>
-                ))}
+                      <label
+                        className={`flex items-center gap-2 ${
+                          task.completed ? "text-gray-400 line-through" : "text-black"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={task.completed}
+                          onChange={() => toggleTask(task.id)}
+                          className="w-4 h-4"
+                        />
+                        {task.text}
+                      </label>
+                      <p className="text-sm text-gray-500">
+                        Deadline: {new Date(task.deadline).toLocaleString()}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500">No tasks available.</p>
+                )}
               </div>
 
               <a
@@ -96,7 +131,35 @@ export default function Page() {
             <div className="bg-gray-100 shadow-md rounded-md p-6 flex-1">
               <h3 className="text-lg font-semibold">Hobby 2</h3>
 
-
+              <div className="checklist flex flex-col gap-4 mt-4">
+                {tasks && tasks.length > 0 ? (
+                  tasks.map((task) => (
+                    <div
+                      key={task.id}
+                      className="flex flex-col bg-gray-50 shadow-sm rounded-md p-4"
+                    >
+                      <label
+                        className={`flex items-center gap-2 ${
+                          task.completed ? "text-gray-400 line-through" : "text-black"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={task.completed}
+                          onChange={() => toggleTask(task.id)}
+                          className="w-4 h-4"
+                        />
+                        {task.text}
+                      </label>
+                      <p className="text-sm text-gray-500">
+                        Deadline: {new Date(task.deadline).toLocaleString()}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500">No tasks available.</p>
+                )}
+              </div>
 
             <a
               className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto mt-4"
@@ -112,30 +175,34 @@ export default function Page() {
             <div className="bg-gray-100 shadow-md rounded-md p-6 flex-1">
               <h3 className="text-lg font-semibold">Hobby 3</h3>
 
-              <div className="flex flex-col gap-4">
-                {tasks.map((task) => (
-                  <div
-                    key={task.id}
-                    className="flex items-center justify-between bg-gray-100 shadow-md rounded-md p-4"
-                  >
-                    <label
-                      className={`flex items-center gap-2 ${
-                        task.completed ? "text-gray-400 line-through" : "text-black"
-                      }`}
+              <div className="checklist flex flex-col gap-4 mt-4">
+                {tasks && tasks.length > 0 ? (
+                  tasks.map((task) => (
+                    <div
+                      key={task.id}
+                      className="flex flex-col bg-gray-50 shadow-sm rounded-md p-4"
                     >
-                      <input
-                        type="checkbox"
-                        checked={task.completed}
-                        onChange={() => toggleTask(task.id)}
-                        className="w-4 h-4"
-                      />
-                      {task.text}
-                    </label>
-                    <p className="text-sm text-gray-500">
-                      Deadline: {new Date(task.deadline).toLocaleString()}
-                    </p>
-                  </div>
-                ))}
+                      <label
+                        className={`flex items-center gap-2 ${
+                          task.completed ? "text-gray-400 line-through" : "text-black"
+                        }`}
+                      >
+                        <input
+                          type="checkbox"
+                          checked={task.completed}
+                          onChange={() => toggleTask(task.id)}
+                          className="w-4 h-4"
+                        />
+                        {task.text}
+                      </label>
+                      <p className="text-sm text-gray-500">
+                        Deadline: {new Date(task.deadline).toLocaleString()}
+                      </p>
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-gray-500">No tasks available.</p>
+                )}
               </div>
 
             <a
@@ -152,9 +219,9 @@ export default function Page() {
           <div className="flex gap-4 items-center flex-col sm:flex-row">
                     <a
                       className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-                      href="/signup"
+                      href="/hobbies_new"
                     >
-                      Get started
+                      Find New Hobby
                     </a>
                   </div>
 
