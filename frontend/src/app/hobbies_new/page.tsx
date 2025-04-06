@@ -26,6 +26,7 @@ export default function Page() {
   ]);
   const [error, setError] = useState("");
   const [userID, setUserID] = useState<string | null>(null); // State to store the userID
+const [addedHobbies, setAddedHobbies] = useState<boolean[]>([]); // State to track added hobbies
 
   useEffect(() => {
     const fetchData = async () => {
@@ -53,6 +54,7 @@ export default function Page() {
             time: hobby.time,
           }));
           setHobbies(hobbyData);
+setAddedHobbies(new Array(hobbyData.length).fill(false)); // Initialize addedHobbies state
         } else {
           setError(data.message || "Failed to load hobbies.");
         }
@@ -92,6 +94,9 @@ export default function Page() {
 
         if (response.ok) {
           console.log("Task created successfully:", data);
+const updatedAddedHobbies = [...addedHobbies];
+          updatedAddedHobbies[key] = true; // Mark the hobby as added
+          setAddedHobbies(updatedAddedHobbies);
         } else {
           setError(data.message || "Failed to create hobby.");
         }
@@ -174,12 +179,17 @@ export default function Page() {
                 </label>
                 <p className="text-sm">{hobby.time}</p>
               </div>
+<div className="flex items-center">
               <a
                 className="rounded-full border border-black px-4 py-2 text-black hover:bg-black hover:text-white transition"
                 onClick={() => handleCreateTask(index)} // Pass the index to the function
               >
                 Add
               </a>
+{addedHobbies[index] && (
+                  <span className="ml-2 text-green-500 font-bold">✔</span>
+                )}
+              </div>
             </div>
           ))}
         </div>
