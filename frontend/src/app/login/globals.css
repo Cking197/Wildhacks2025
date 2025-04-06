@@ -1,7 +1,7 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
+  --background: #fdfdfd;
   --foreground: #000000;
 }
 
@@ -14,7 +14,7 @@
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #ffffff;
+    --background: #fdfdfd;
     --foreground: #000000;
   }
 }
@@ -23,4 +23,12 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+.log-in-line-container {
+  display: flex;
+  justify-content: center; /* Centers elements vertically */
+  align-items: center; /* Aligns text and button horizontally */
+  gap: 0.5rem; /* Adds spacing between the text and button */
+  margin-bottom: 1rem; /* Adds spacing below the container */
 }
